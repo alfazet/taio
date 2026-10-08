@@ -1,15 +1,33 @@
+#include "utils.h"
 #include <iostream>
 #include <vector>
-#include "utils.h"
 
 using namespace std;
 
-vector<vector<int>> solve1(const vector<int>& a) {
-    return {};
+void add_element(const vector<int> &a, size_t index, vector<vector<int>> &groups, vector<vector<int>> &res, int &best) {
+    if (index == a.size()) {
+        int curr = get_sum_diff(groups);
+        if (curr < best) {
+            best = curr;
+            res = groups;
+        }
+        return;
+    }
+    for (size_t g = 0; g < groups.size(); g++) {
+        groups[g].push_back(a[index]);
+        add_element(a, index + 1, groups, res, best);
+        groups[g].pop_back();
+    }
 }
 
-vector<vector<int>> solve2(const vector<int>& a) {
-    return {};
+vector<vector<int>> solve(const vector<int> &a, int k) {
+    vector<vector<int>> res;
+    vector<vector<int>> groups(k > 0 ? k : 0);
+    int sum = 0;
+    for (size_t i = 0; i < a.size(); i++) sum += a[i];
+    int best = sum;
+    add_element(a, 0, groups, res, best);
+    return res;
 }
 
 int main() {
@@ -17,10 +35,10 @@ int main() {
     for (size_t i = 0; i < examples.size(); i++) {
         cout << "Example " << i + 1 << ": ";
         print_example(examples[i]);
-        cout << "  solve1: ";
-        print_solution(solve1(examples[i]));
-        cout << "  solve2: ";
-        print_solution(solve2(examples[i]));
+        for (int k = 2; k < 5; k++) {
+            cout << " solve k = " << k << ": ";
+            print_solution(solve(examples[i], k));
+        }
     }
     return 0;
 }
