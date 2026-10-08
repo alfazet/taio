@@ -24,7 +24,8 @@ vector<vector<int>> solve(const vector<int> &a, int k) {
     vector<vector<int>> res;
     vector<vector<int>> groups(k > 0 ? k : 0);
     int sum = 0;
-    for (size_t i = 0; i < a.size(); i++) sum += a[i];
+    for (size_t i = 0; i < a.size(); i++)
+        sum += a[i];
     int best = sum;
     add_element(a, 0, groups, res, best);
     return res;
