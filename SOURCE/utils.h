@@ -1,0 +1,11 @@
+#ifndef UTILS_H
+#define UTILS_H
+
+#include <iostream>
+#include <vector>
+
+std::vector<std::vector<int>> read_examples(std::istream& in);
+void print_example(const std::vector<int>& example);
+void print_solution(const std::vector<std::vector<int>>& solution);
+
+#endif
