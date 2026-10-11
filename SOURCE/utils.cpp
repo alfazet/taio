@@ -42,13 +42,17 @@ vector<vector<int>> read_examples(istream &in) {
 }
 
 void print_example(const vector<int> &example) {
-    cout << "[";
     for (size_t i = 0; i < example.size(); i++) {
         if (i)
-            cout << ", ";
+            cout << " ";
         cout << example[i];
     }
-    cout << "]\n";
+    cout << "\n";
+}
+
+void print_examples(const vector<vector<int>> &examples) {
+    for (const vector<int> &example : examples)
+        print_example(example);
 }
 
 void print_solution(const vector<vector<int>> &solution) {
