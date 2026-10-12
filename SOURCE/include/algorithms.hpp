@@ -43,8 +43,7 @@ Solution brute_force(const std::vector<int> &s);
 // TODO
 Solution meet_in_the_middle(const std::vector<int> &s);
 
-// TODO
-Solution pseudo_poly(const std::vector<int> &s);
+Solution pseudo_polynomial(const std::vector<int> &s);
 
 }; // namespace algorithms
 

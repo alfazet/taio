@@ -6,12 +6,13 @@
 #include <unordered_map>
 #include <unordered_set>
 
-constexpr const char *DEFAULT_INPUT_FILE = "../EXAMPLES/sample.txt";
+constexpr const char *DEFAULT_INPUT_FILE = "";
 constexpr int DEFAULT_ALGORITHM = 0;
 
 #define ARG_TABLE(X)                                                                                                   \
     X("--help", help, bool, parse_bool, false, "show help?")                                                           \
-    X("-i", input, std::string, parse_string, DEFAULT_INPUT_FILE, "input file with testcases")                         \
+    X("-i", input_file, std::string, parse_string, DEFAULT_INPUT_FILE,                                                 \
+      "input file with testcases (reads from stdin if not provided)")                                                  \
     X("-a", algorithm, int, parse_int_range(0, 2), DEFAULT_ALGORITHM,                                                  \
       "id of the algorithm to run (0/1/2 = brute/meet-in-the-middle/pseudo-poly)")
 
@@ -19,6 +20,7 @@ struct ArgList {
     std::string dataset_path;
 
     std::unordered_set<std::string> provided_flags;
+
     bool was_provided(const char *flag) const { return provided_flags.contains(flag); }
 
 #define X(flag, field, type, parser, default_val, help) type field = default_val;
@@ -39,8 +41,6 @@ class ArgParser {
     ArgList parse_all();
 
     void print_help() const;
-    void print_values(const ArgList &args) const;
-    std::string build_image_metadata(const ArgList &args) const;
 
   private:
     static std::unordered_map<std::string, void (ArgParser::*)(ArgList &)> flag_parsers;
