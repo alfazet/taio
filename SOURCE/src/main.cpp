@@ -1,11 +1,11 @@
 #include "algorithms.hpp"
 #include "cli_args.hpp"
+#include "input.hpp"
 
 #include <fstream>
 #include <iostream>
 #include <optional>
 #include <print>
-#include <sstream>
 #include <vector>
 
 #define BRUTE 0
@@ -27,24 +27,6 @@ AlgorithmImpl select_algorithm(int id) {
     return &algorithms::brute_force;
 }
 
-std::optional<std::vector<int>> read_testcase(std::istream &input) {
-    std::vector<int> testcase{};
-    std::string line{};
-
-    if (!std::getline(input, line))
-        return {};
-
-    int x{};
-    std::istringstream iss(line);
-    while (iss >> x)
-        testcase.push_back(x);
-    if (testcase.empty()) {
-        throw std::runtime_error("invalid testcase");
-    }
-
-    return testcase;
-}
-
 void main_(const ArgList &args) {
     std::optional<std::ifstream> file{};
     if (args.was_provided("-i")) {
@@ -57,12 +39,12 @@ void main_(const ArgList &args) {
     AlgorithmImpl impl = select_algorithm(args.algorithm);
     auto f = [impl](const std::vector<int> &s) { return impl(s); };
 
-    int tc = 1;
-    std::optional<std::vector<int>> s{};
-    while ((s = read_testcase(input)) && s.has_value()) {
-        Solution solution = f(s.value());
+    int n_testcases = input::read_int(input);
+    std::vector<int> s{};
+    for (int tc = 1; tc <= n_testcases; tc++) {
+        s = input::read_testcase(input);
+        Solution solution = f(s);
         std::println("testcase {}\n{}\n", tc, solution);
-        tc++;
     }
 }
 
