@@ -45,6 +45,8 @@ Solution meet_in_the_middle(const std::vector<int> &s);
 
 Solution pseudo_polynomial(const std::vector<int> &s);
 
+Solution karmarkar_karp(const std::vector<int> &s);
+
 }; // namespace algorithms
 
 using AlgorithmImpl = Solution (*)(const std::vector<int> &);

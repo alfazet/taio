@@ -11,6 +11,7 @@
 #define BRUTE 0
 #define MITM 1
 #define PSEUDOPOLY 2
+#define KARMARKAR_KARP 3
 
 AlgorithmImpl select_algorithm(int id) {
     switch (id) {
@@ -21,6 +22,8 @@ AlgorithmImpl select_algorithm(int id) {
         break;
     case PSEUDOPOLY:
         return &algorithms::pseudo_polynomial;
+    case KARMARKAR_KARP:
+        return &algorithms::karmarkar_karp;
     }
 
     // fallback

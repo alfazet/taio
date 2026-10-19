@@ -13,8 +13,8 @@ constexpr int DEFAULT_ALGORITHM = 0;
     X("--help", help, bool, parse_bool, false, "show help?")                                                           \
     X("-i", input_file, std::string, parse_string, DEFAULT_INPUT_FILE,                                                 \
       "input file with testcases (reads from stdin if not provided)")                                                  \
-    X("-a", algorithm, int, parse_int_range(0, 2), DEFAULT_ALGORITHM,                                                  \
-      "id of the algorithm to run (0/1/2 = brute/meet-in-the-middle/pseudo-poly)")
+    X("-a", algorithm, int, parse_int_range(0, 3), DEFAULT_ALGORITHM,                                                  \
+      "id of the algorithm to run (0/1/2/3 = brute/meet-in-the-middle/pseudo-poly/karmarkar-karp)")
 
 struct ArgList {
     std::string dataset_path;
