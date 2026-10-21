@@ -4,8 +4,6 @@
 #include <format>
 #include <vector>
 
-#define PROBLEM_K 2
-
 #define MAX_N_BRUTE 32
 #define MAX_N_MITM 64
 #define MAX_NK_PSEUDOPOLY 0x7fffffff
@@ -14,11 +12,13 @@
 #define INF 0x7fffffff
 
 struct Solution {
-    std::vector<std::vector<int>> subsets = std::vector<std::vector<int>>(PROBLEM_K);
-    int abs_sum_diff = INF;
+    std::vector<std::vector<int>> subsets;
+    int abs_sum_diff;
+
+    explicit Solution(int n_subsets) : subsets{std::vector<std::vector<int>>(n_subsets)}, abs_sum_diff{INF} {}
 
     inline void reset() {
-        for (int i = 0; i < PROBLEM_K; i++)
+        for (int i = 0; i < this->subsets.size(); i++)
             this->subsets[i].clear();
         this->abs_sum_diff = INF;
     }
@@ -38,17 +38,17 @@ template <> struct std::formatter<Solution> : std::formatter<std::string> {
 
 namespace algorithms {
 
-Solution brute_force(const std::vector<int> &s);
+Solution brute_force(const std::vector<int> &s, int n_subsets);
 
 // TODO
-Solution meet_in_the_middle(const std::vector<int> &s);
+Solution meet_in_the_middle(const std::vector<int> &s, int n_subsets);
 
-Solution pseudo_polynomial(const std::vector<int> &s);
+Solution pseudo_polynomial(const std::vector<int> &s, int n_subsets);
 
-Solution karmarkar_karp(const std::vector<int> &s);
+Solution karmarkar_karp(const std::vector<int> &s, int n_subsets);
 
 }; // namespace algorithms
 
-using AlgorithmImpl = Solution (*)(const std::vector<int> &);
+using AlgorithmImpl = Solution (*)(const std::vector<int> &, int);
 
 #endif // TAIO_ALGORITHMS_HPP

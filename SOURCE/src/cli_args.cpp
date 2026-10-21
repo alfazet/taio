@@ -20,7 +20,7 @@ auto parse_int_range(int min, int max) {
     return [min, max](const char *s, const char *arg_name) {
         int value = parse_int(s, arg_name);
         if (value < min || value > max) {
-            throw InvalidValueError(std::string(arg_name) + " (expected " + std::to_string(min) +
+            throw InvalidValueError(std::string(arg_name) + " (oczekiwano " + std::to_string(min) +
                                     "..=" + std::to_string(max) + ")");
         }
 
@@ -50,7 +50,7 @@ std::unordered_map<std::string, ParserFn> ArgParser::flag_parsers = {
             this->arg_i--;                                                                                             \
         } else if (this->arg_i >= this->n_args) {                                                                      \
             this->print_help();                                                                                        \
-            throw std::runtime_error("expected a string value for " #field);                                           \
+            throw std::runtime_error("oczekiwano napisu dla " #field);                                                 \
         }                                                                                                              \
         list.field = parser(this->values[this->arg_i], #field);                                                        \
         list.provided_flags.insert(flag);                                                                              \
@@ -59,10 +59,9 @@ ARG_TABLE(X)
 #undef X
 
 void ArgParser::print_help() const {
-    this->out << "usage: " << this->prog_name << " [flags]\nwhere:\n";
+    this->out << "użycie: " << this->prog_name << " [opcje]\ngdzie:\n";
 #define X(flag, field, type, parser, default_val, help)                                                                \
-    this->out << "  " << std::left << std::setw(20) << flag << std::setw(80) << help << "(default: " << default_val    \
-              << ")\n";
+    this->out << "  " << std::left << std::setw(8) << flag << std::setw(120) << help << "\n";
     ARG_TABLE(X)
 #undef X
 }

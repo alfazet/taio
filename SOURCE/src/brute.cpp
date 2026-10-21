@@ -5,12 +5,14 @@
 
 namespace algorithms {
 
-Solution brute_force(const std::vector<int> &s) {
-    // TODO: add bound checks on n
+Solution brute_force(const std::vector<int> &s, int n_subsets) {
+    if (n_subsets != 2)
+        throw std::runtime_error("działa tylko dla podziału na 2 podzbiory");
+
     int n = s.size();
     int sum_total = std::accumulate(s.begin(), s.end(), 0);
     int max_bitmask = (1 << n) - 1;
-    Solution best{};
+    Solution best(n_subsets);
 
     for (int bitmask = 0; bitmask <= max_bitmask; bitmask++) {
         int sum_taken = 0;

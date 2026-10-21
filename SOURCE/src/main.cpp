@@ -35,19 +35,20 @@ void main_(const ArgList &args) {
     if (args.was_provided("-i")) {
         file.emplace(args.input_file);
         if (!*file)
-            throw std::runtime_error("could not open the input file");
+            throw std::runtime_error("nie udało się otworzyć pliku");
     }
     std::istream &input = (file ? file.value() : std::cin);
 
     AlgorithmImpl impl = select_algorithm(args.algorithm);
-    auto f = [impl](const std::vector<int> &s) { return impl(s); };
+    auto f = [impl](const std::vector<int> &s, int n_subsets) { return impl(s, n_subsets); };
 
     int n_testcases = input::read_int(input);
+    int n_subsets = args.n_subsets;
     std::vector<int> s{};
     for (int tc = 1; tc <= n_testcases; tc++) {
         s = input::read_testcase(input);
-        Solution solution = f(s);
-        std::println("testcase {}\n{}\n", tc, solution);
+        Solution solution = f(s, n_subsets);
+        std::println("test {}\n{}\n", tc, solution);
     }
 }
 
@@ -61,11 +62,11 @@ int main(int argc, char **argv) {
         }
         main_(args);
     } catch (const ArgParserError &e) {
-        std::println(stderr, "argument parser error: {}", e.what());
+        std::println(stderr, "błąd parsera opcji: {}", e.what());
         arg_parser.print_help();
         return 1;
     } catch (const std::runtime_error &e) {
-        std::println(stderr, "runtime error: {}", e.what());
+        std::println(stderr, "błąd wykonania: {}", e.what());
         return 1;
     }
 

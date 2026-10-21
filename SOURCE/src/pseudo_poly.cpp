@@ -5,7 +5,10 @@
 
 namespace algorithms {
 
-Solution pseudo_polynomial(const std::vector<int> &s) {
+Solution pseudo_polynomial(const std::vector<int> &s, int n_subsets) {
+    if (n_subsets != 2)
+        throw std::runtime_error("działa tylko dla podziału na 2 podzbiory");
+
     int n = s.size();
     int sum_total = std::accumulate(s.begin(), s.end(), 0);
     int half_total_sum = sum_total / 2;
@@ -28,7 +31,7 @@ Solution pseudo_polynomial(const std::vector<int> &s) {
     while (!dp[n][achieved_sum])
         achieved_sum--;
 
-    Solution best{};
+    Solution best(n_subsets);
     best.abs_sum_diff = std::abs(achieved_sum - (sum_total - achieved_sum));
     for (int i = n; i >= 1; i--) {
         if (dp[i - 1][achieved_sum])

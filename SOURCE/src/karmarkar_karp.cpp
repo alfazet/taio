@@ -1,42 +1,36 @@
 #include "algorithms.hpp"
 
-#include <cmath>
 #include <numeric>
 
 namespace algorithms {
 
 struct KKTuple {
-    std::vector<std::vector<int>> subsets;
-    std::vector<int> sums;
-    int spread = 0;
+    std::vector<std::vector<int>> subsets{};
+    std::vector<int> sums{};
+    int spread{};
 
     void update_spread() {
-        auto mm = std::minmax_element(sums.begin(), sums.end());
-        spread = *mm.second - *mm.first;
+        auto mm = std::minmax_element(this->sums.begin(), this->sums.end());
+        this->spread = *mm.second - *mm.first;
     }
 
-    bool operator<(const KKTuple &o) const { return spread < o.spread; }
+    bool operator<(const KKTuple &o) const { return this->spread < o.spread; }
 };
 
-Solution karmarkar_karp(const std::vector<int> &s) {
-    Solution best{};
-
-    if (s.empty())
-        return best;
-
+Solution karmarkar_karp(const std::vector<int> &s, int n_subsets) {
+    Solution best(n_subsets);
     std::vector<KKTuple> heap;
     heap.reserve(s.size());
 
     for (int x : s) {
         KKTuple t;
-        t.subsets.assign(PROBLEM_K, std::vector<int>());
-        t.sums.assign(PROBLEM_K, 0);
+        t.subsets.assign(n_subsets, std::vector<int>());
+        t.sums.assign(n_subsets, 0);
         t.subsets[0].push_back(x);
         t.sums[0] = x;
         t.update_spread();
         heap.push_back(std::move(t));
     }
-
     std::make_heap(heap.begin(), heap.end());
 
     while (heap.size() > 1) {
@@ -48,7 +42,7 @@ Solution karmarkar_karp(const std::vector<int> &s) {
         KKTuple b = std::move(heap.back());
         heap.pop_back();
 
-        std::vector<int> ia(PROBLEM_K), ib(PROBLEM_K);
+        std::vector<int> ia(n_subsets), ib(n_subsets);
         std::iota(ia.begin(), ia.end(), 0);
         std::iota(ib.begin(), ib.end(), 0);
 
@@ -56,10 +50,10 @@ Solution karmarkar_karp(const std::vector<int> &s) {
         std::sort(ib.begin(), ib.end(), [&](int x, int y) { return b.sums[x] > b.sums[y]; });
 
         KKTuple c;
-        c.subsets.assign(PROBLEM_K, std::vector<int>());
-        c.sums.assign(PROBLEM_K, 0);
+        c.subsets.assign(n_subsets, std::vector<int>());
+        c.sums.assign(n_subsets, 0);
 
-        for (int j = 0; j < PROBLEM_K; j++) {
+        for (int j = 0; j < n_subsets; j++) {
             std::vector<int> &dst = c.subsets[j];
             std::vector<int> &sa = a.subsets[ia[j]];
             std::vector<int> &sb = b.subsets[ib[j]];
@@ -73,10 +67,10 @@ Solution karmarkar_karp(const std::vector<int> &s) {
         heap.push_back(std::move(c));
         std::push_heap(heap.begin(), heap.end());
     }
-
     best.subsets = std::move(heap.front().subsets);
-    best.abs_sum_diff = static_cast<int>(heap.front().spread);
+    best.abs_sum_diff = heap.front().spread;
 
     return best;
 }
+
 }; // namespace algorithms
