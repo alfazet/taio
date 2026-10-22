@@ -4,18 +4,13 @@
 #include <format>
 #include <vector>
 
-#define MAX_N_BRUTE 32
-#define MAX_N_MITM 64
-#define MAX_NK_PSEUDOPOLY 0x7fffffff
-#define MAX_NM_PSEUDOPOLY 0x7fffffff
-
-#define INF 0x7fffffff
+constexpr int INF = 0x7fffffff;
 
 struct Solution {
     std::vector<std::vector<int>> subsets;
     int abs_sum_diff;
 
-    explicit Solution(int n_subsets) : subsets{std::vector<std::vector<int>>(n_subsets)}, abs_sum_diff{INF} {}
+    explicit Solution(int n_subsets) : subsets(n_subsets), abs_sum_diff{INF} {}
 
     inline void reset() {
         for (int i = 0; i < this->subsets.size(); i++)
@@ -26,8 +21,8 @@ struct Solution {
 
 template <> struct std::formatter<Solution> : std::formatter<std::string> {
     auto format(const Solution &s, std::format_context &ctx) const {
-        std::string repr =
-            std::format("largest absolute difference of sums over all subsets:\n{}\nsubsets:", s.abs_sum_diff);
+        std::string repr = std::format("największy moduł z różnic sum po wszystkich parach podzbiorów:\n{}\npodzbiory:",
+                                       s.abs_sum_diff);
         for (const auto &subset : s.subsets) {
             repr += std::format("\n{}", subset);
         }
