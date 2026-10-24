@@ -9,25 +9,17 @@
 #include <vector>
 
 #define BRUTE 0
-#define MITM 1
-#define PSEUDOPOLY 2
-#define KARMARKAR_KARP 3
+#define KARMARKAR_KARP 1
 
 AlgorithmImpl select_algorithm(int id) {
     switch (id) {
     case BRUTE:
         return &algorithms::brute_force;
-    case MITM:
-        std::println(stderr, "not implemented yet");
-        break;
-    case PSEUDOPOLY:
-        return &algorithms::pseudo_polynomial;
     case KARMARKAR_KARP:
         return &algorithms::karmarkar_karp;
     }
 
-    // fallback
-    return &algorithms::brute_force;
+    throw std::runtime_error("wybrano nieprawidłowy algorytm (musi być 0 lub 1)");
 }
 
 void main_(const ArgList &args) {
@@ -40,11 +32,11 @@ void main_(const ArgList &args) {
     std::istream &input = (file ? file.value() : std::cin);
 
     AlgorithmImpl impl = select_algorithm(args.algorithm);
-    auto f = [impl](const std::vector<int> &s, int n_subsets) { return impl(s, n_subsets); };
+    auto f = [impl](const std::vector<BigInt> &s, int n_subsets) { return impl(s, n_subsets); };
 
     int n_testcases = input::read_int(input);
     int n_subsets = args.n_subsets;
-    std::vector<int> s{};
+    std::vector<BigInt> s{};
     for (int tc = 1; tc <= n_testcases; tc++) {
         s = input::read_testcase(input);
         Solution solution = f(s, n_subsets);

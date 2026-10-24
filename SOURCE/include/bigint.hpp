@@ -3,6 +3,7 @@
 
 #include <compare>
 #include <format>
+#include <iostream>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -19,7 +20,18 @@ class BigInt {
   public:
     BigInt() : d_{0} {}
 
-    explicit BigInt(const std::string &s) : BigInt() {
+    BigInt(u64 x) : d_{} {
+        if (x == 0) {
+            d_.push_back(0);
+        } else {
+            d_.push_back(static_cast<u32>(x));
+            if ((x >> N_BITS) > 0) {
+                d_.push_back(static_cast<u32>(x >> N_BITS));
+            }
+        }
+    }
+
+    BigInt(const std::string &s) : BigInt() {
         if (s.empty())
             throw std::runtime_error("liczba nie może być pusta");
 
@@ -46,11 +58,20 @@ class BigInt {
         }
     }
 
-    bool is_zero() const { return this->d_.size() == 1 && this->d_[0] == 0; }
+    static BigInt make_inf() {
+        BigInt x = BigInt{};
+        x.is_inf_ = true;
+
+        return x;
+    }
+
+    bool is_zero() const { return !this->is_inf_ && this->d_.size() == 1 && this->d_[0] == 0; }
 
     std::string to_decimal() const {
         if (is_zero())
             return "0";
+        if (this->is_inf_)
+            return "INF";
 
         BigInt tmp = *this;
         std::vector<u32> chunks;
@@ -67,18 +88,38 @@ class BigInt {
         return res;
     }
 
+    BigInt abs_diff(const BigInt &other) const {
+        if (this->is_inf_ || other.is_inf_)
+            return BigInt::make_inf();
+        return (*this >= other) ? (*this - other) : (other - *this);
+    }
+
+    friend BigInt abs_diff(const BigInt &x, const BigInt &y) { return x.abs_diff(y); }
+
     friend std::istream &operator>>(std::istream &in, BigInt &x) {
         std::string s;
-        in >> s;
-        x = BigInt(s);
+        if (in >> s) {
+            try {
+                x = BigInt(s);
+            } catch (...) {
+                in.setstate(std::ios_base::failbit);
+            }
+        }
 
         return in;
     }
 
+    friend std::ostream &operator<<(std::ostream &os, const BigInt &x) { return os << x.to_decimal(); }
+
     BigInt &operator+=(const BigInt &other) {
+        if (this->is_inf_ || other.is_inf_) {
+            *this = BigInt::make_inf();
+            return *this;
+        }
         if (this == &other) {
             BigInt copy = other;
-            return *this += copy;
+            *this += copy;
+            return *this;
         }
         if (other.d_.size() > this->d_.size())
             this->d_.resize(other.d_.size(), 0);
@@ -102,6 +143,13 @@ class BigInt {
     friend BigInt operator+(BigInt x, const BigInt &y) { return x += y; }
 
     BigInt &operator-=(const BigInt &other) {
+        if (this->is_inf_) {
+            return *this;
+        }
+        if (this == &other) {
+            this->d_ = {0};
+            return *this;
+        }
         if (*this < other)
             throw std::runtime_error("nie można odjąć większej liczby od mniejszej");
 
@@ -128,6 +176,10 @@ class BigInt {
     friend BigInt operator-(BigInt x, const BigInt &y) { return x -= y; }
 
     std::strong_ordering operator<=>(const BigInt &other) const {
+        if (this->is_inf_)
+            return std::strong_ordering::greater;
+        if (other.is_inf_)
+            return std::strong_ordering::less;
         if (this->d_.size() != other.d_.size())
             return this->d_.size() <=> other.d_.size();
         for (usize i = this->d_.size(); i-- > 0;) {
@@ -138,12 +190,17 @@ class BigInt {
         return std::strong_ordering::equal;
     }
 
-    bool operator==(const BigInt &other) const { return this->d_ == other.d_; }
+    bool operator==(const BigInt &other) const { return this->is_inf_ == other.is_inf_ && this->d_ == other.d_; }
 
     bool operator!=(const BigInt &other) const { return !(*this == other); }
 
   private:
     std::vector<u32> d_;
+    // infinity is a special value that works as follows
+    // - INF > x for all x != INF
+    // - INF + x = INF for all x
+    // - INF - x = INF for all x != INF, INF - INF = 0
+    bool is_inf_ = false;
 
     void trim() {
         while (this->d_.size() > 1 && this->d_.back() == 0)
@@ -151,19 +208,27 @@ class BigInt {
     }
 
     void mul_and_add(u32 m, u32 a) {
+        if (this->is_inf_)
+            return;
+
         u64 carry = a;
         for (u32 &digit : this->d_) {
             u64 cur = u64{digit} * m + carry;
             digit = static_cast<u32>(cur);
             carry = (cur >> N_BITS);
         }
-        if (carry)
+        while (carry) {
             this->d_.push_back(static_cast<u32>(carry));
+            carry >>= N_BITS;
+        }
         this->trim();
     }
 
     // divides *this in-place, returns the remainder
     u32 div(u32 div) {
+        if (this->is_inf_)
+            return 0;
+
         u64 rem = 0;
         for (usize i = this->d_.size(); i-- > 0;) {
             u64 cur = (rem << N_BITS) | this->d_[i];
@@ -177,7 +242,7 @@ class BigInt {
 };
 
 template <> struct std::formatter<BigInt> : std::formatter<std::string> {
-    auto format(const BigInt &x, std::format_context &ctx) const {
+    template <typename FormatContext> auto format(const BigInt &x, FormatContext &ctx) const {
         return std::formatter<std::string>::format(x.to_decimal(), ctx);
     }
 };
