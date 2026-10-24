@@ -11,10 +11,10 @@ rand() {
 		DIGITS="$1"
 	fi
 
-	python -c "import random as R; print(R.randint(0, 10**${DIGITS}))"
+	python -c "import random as R; print(R.randint(10**$((${DIGITS} - 1)), 10**${DIGITS} - 1))"
 }
 
-# Due to large sizes of numbers simple [ NUM1 -ge NUM2 ] will not work
+# Due to large size of numbers, simple [ NUM1 -ge NUM2 ] will not work
 compare() {
 	if [ $(bc <<< "$1 > $2") -eq 1 ]; then
 		return 1
@@ -23,6 +23,8 @@ compare() {
 	return 0
 }
 
+# Usage: single_test <operation> <digits>
+# Perform single bigint test with numbers of up to <digits> long
 single_test() {
 	# Get operation
 	if [ ! -z "$1" ]; then
@@ -57,6 +59,7 @@ single_test() {
 	echo "Status: [$STATUS] | $NUM1 $OPERATION $NUM2 = $RESULT | Oczekiwany wynik: $EXPECTED"
 }
 
+# Loop and test numbers of incremental lengths
 for i in $(seq 1 40); do
 	single_test + $i
 	single_test - $i
