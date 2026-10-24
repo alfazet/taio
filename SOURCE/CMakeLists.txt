@@ -5,7 +5,11 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include_directories(include)
-file(GLOB SOURCES CONFIGURE_DEPENDS src/*.cpp)
+if (${CMAKE_BUILD_TYPE} STREQUAL "test_bigint")
+    file(GLOB SOURCES CONFIGURE_DEPENDS tests/bigint.cpp)
+else ()
+    file(GLOB SOURCES CONFIGURE_DEPENDS src/*.cpp)
+endif ()
 add_executable(taio ${SOURCES})
 
 if (${CMAKE_BUILD_TYPE} STREQUAL "debug")
@@ -13,3 +17,4 @@ if (${CMAKE_BUILD_TYPE} STREQUAL "debug")
 else ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 endif ()
+
