@@ -5,9 +5,9 @@
 namespace algorithms {
 
 struct KKTuple {
-    std::vector<std::vector<int>> subsets{};
-    std::vector<int> sums{};
-    int spread{};
+    std::vector<std::vector<BigInt>> subsets{};
+    std::vector<BigInt> sums{};
+    BigInt spread{};
 
     void update_spread() {
         auto mm = std::minmax_element(this->sums.begin(), this->sums.end());
@@ -17,15 +17,18 @@ struct KKTuple {
     bool operator<(const KKTuple &o) const { return this->spread < o.spread; }
 };
 
-Solution karmarkar_karp(const std::vector<int> &s, int n_subsets) {
+Solution karmarkar_karp(const std::vector<BigInt> &s, int n_subsets) {
     Solution best(n_subsets);
+    if (s.empty())
+        return best;
+
     std::vector<KKTuple> heap;
     heap.reserve(s.size());
 
-    for (int x : s) {
+    for (const BigInt &x : s) {
         KKTuple t;
-        t.subsets.assign(n_subsets, std::vector<int>());
-        t.sums.assign(n_subsets, 0);
+        t.subsets.assign(n_subsets, std::vector<BigInt>());
+        t.sums.assign(n_subsets, BigInt{0});
         t.subsets[0].push_back(x);
         t.sums[0] = x;
         t.update_spread();
@@ -50,13 +53,13 @@ Solution karmarkar_karp(const std::vector<int> &s, int n_subsets) {
         std::sort(ib.begin(), ib.end(), [&](int x, int y) { return b.sums[x] > b.sums[y]; });
 
         KKTuple c;
-        c.subsets.assign(n_subsets, std::vector<int>());
-        c.sums.assign(n_subsets, 0);
+        c.subsets.assign(n_subsets, std::vector<BigInt>());
+        c.sums.assign(n_subsets, BigInt{0});
 
         for (int j = 0; j < n_subsets; j++) {
-            std::vector<int> &dst = c.subsets[j];
-            std::vector<int> &sa = a.subsets[ia[j]];
-            std::vector<int> &sb = b.subsets[ib[j]];
+            std::vector<BigInt> &dst = c.subsets[j];
+            std::vector<BigInt> &sa = a.subsets[ia[j]];
+            std::vector<BigInt> &sb = b.subsets[ib[j]];
 
             dst = std::move(sa);
             dst.insert(dst.end(), sb.begin(), sb.end());

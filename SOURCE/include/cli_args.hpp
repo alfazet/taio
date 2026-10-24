@@ -16,7 +16,7 @@ constexpr int DEFAULT_N_SUBSETS = 2;
     X("-i", input_file, std::string, parse_string, DEFAULT_INPUT_FILE,                                                 \
       "plik z danymi wejściowymi, program czyta z wejścia standardowego jeżeli nie podano pliku")                      \
     X("-a", algorithm, int, parse_int_range(0, 3), DEFAULT_ALGORITHM,                                                  \
-      "numer wybranego algorytmu (0/1/2/3 = brute-force/meet-in-the-middle/pseudo-wielomianowy/karmarkar-karp)")       \
+      "numer wybranego algorytmu (0/1 = brute-force/karmarkar-karp)")                                                  \
     X("-k", n_subsets, int, parse_int_range(2, std::numeric_limits<int>::max()), DEFAULT_N_SUBSETS,                    \
       "na ile podzbiorów podzielić dany zbiór")
 
