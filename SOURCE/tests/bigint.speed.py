@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 sys.set_int_max_str_digits(1000000)
 
 def get_program_str(input_file):
-    return f"../build/test_bigint/taio {input_file} > /dev/null"
+    return f"../build/test_bigint/test_bigint {input_file} > /dev/null"
 
 def program(s):
     os.system(s)

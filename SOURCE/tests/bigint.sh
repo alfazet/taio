@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TEST=../build/test_bigint/taio
+TEST=../build/test_bigint/test_bigint
 
 # Usage: rand <digits>
 # Prints random number with at most <digits> digits
