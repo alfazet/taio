@@ -9,7 +9,7 @@ import os
 import matplotlib.pyplot as plt
 
 sys.set_int_max_str_digits(1000000)
-random.seed(2137)
+random.seed(456789135645)
 retries = 15
 
 def get_program_str(input_file):
@@ -47,8 +47,9 @@ for i in digits:
         output_file = f'{input_file}.out'
         with open(output_file, 'r') as of:
             output_text = of.read()
-        output_split = output_text.split(' ')
-        time_measure = output_split[0]
+        #output_split = output_text.split(' ')
+        #time_measure = output_split[0]
+        time_measure = output_text
 
         # Remove temporary input and test program output file
         os.remove(input_file);

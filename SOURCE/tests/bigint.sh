@@ -58,7 +58,7 @@ single_test() {
 	echo "$OPERATION" "$NUM1" "$NUM2" > "$INPUT_FILE"
 
 	# Execute bigint operation
-	./"${TEST}" "$INPUT_FILE"
+	./"${TEST}" "$INPUT_FILE" "z"
 
 	# Read bigint test output
 	TEST_OUTPUT=$(cat "${INPUT_FILE}.out")

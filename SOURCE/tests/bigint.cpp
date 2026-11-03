@@ -8,9 +8,13 @@ int main(int argc, char **argv) {
 
 	if (argc < 2) {
 		std::cerr << "Użycie: " << argv[0] <<
-			"<plik>\nPlik powinien zawierać dane w formacie: <+|-> <liczba1> <liczba2>\n";
+			"<plik> <z>\nPlik powinien zawierać dane w formacie: <+|-> "
+			"<liczba1> <liczba2>\nObecność <z> określa czy program ma zapisać"
+			" wynik operacji\n";
 		return 1;
 	}
+
+	bool save_result = argc > 2;
 
     std::ifstream file(argv[1]);
 
@@ -55,11 +59,12 @@ int main(int argc, char **argv) {
 		std::cerr << "Nie można otworzyć pliku wyjściowego " << outfile_name << "\n";
 		return 4;
 	} else {
-		outfile << std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count() <<
-			" " << result << "\n";
+		outfile << std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count();
+		if (save_result) {
+			outfile << " " << result;
+		}
+		outfile << "\n";
 	}
-
-//    std::cout << result;
 
     return 0;
 }
