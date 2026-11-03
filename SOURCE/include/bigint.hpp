@@ -12,7 +12,6 @@ typedef std::size_t usize;
 typedef std::uint32_t u32;
 typedef std::uint64_t u64;
 
-constexpr u32 N_BITS = 32;
 constexpr u32 CHUNK_BASE = 1'000'000'000;
 constexpr u32 CHUNK_LEN = 9;
 
@@ -24,9 +23,9 @@ class BigInt {
         if (x == 0) {
             d_.push_back(0);
         } else {
-            d_.push_back(static_cast<u32>(x));
-            if ((x >> N_BITS) > 0) {
-                d_.push_back(static_cast<u32>(x >> N_BITS));
+            while (x > 0) {
+                d_.push_back(static_cast<u32>(x % CHUNK_BASE));
+                x /= CHUNK_BASE;
             }
         }
     }
@@ -39,23 +38,17 @@ class BigInt {
             if (c < '0' || c > '9')
                 throw std::runtime_error("liczba może zawierać wyłącznie cyfry dziesiętne");
 
-        *this = BigInt{};
-        usize first_len = s.size() % CHUNK_LEN;
-        if (first_len == 0)
-            first_len = std::min(CHUNK_LEN, static_cast<u32>(s.size()));
-        usize p = 0;
-
-        while (p < s.size()) {
-            usize len = (p == 0) ? first_len : CHUNK_LEN;
+        d_.clear();
+        usize end = s.size();
+        while (end > 0) {
+            usize start = (end >= CHUNK_LEN) ? end - CHUNK_LEN : 0;
             u32 chunk = 0;
-            u32 pow_10 = 1;
-            for (usize i = 0; i < len; i++) {
-                chunk = chunk * 10 + (s[p + i] - '0');
-                pow_10 *= 10;
-            }
-            this->mul_and_add(pow_10, chunk);
-            p += len;
+            for (usize i = start; i < end; i++)
+                chunk = chunk * 10 + static_cast<u32>(s[i] - '0');
+            d_.push_back(chunk);
+            end = start;
         }
+        this->trim();
     }
 
     static BigInt make_inf() {
@@ -73,18 +66,12 @@ class BigInt {
         if (this->is_inf_)
             return "INF";
 
-        BigInt tmp = *this;
-        std::vector<u32> chunks;
-        while (!tmp.is_zero())
-            chunks.push_back(tmp.div(CHUNK_BASE));
-
-        std::string res = std::to_string(chunks.back());
-        for (usize i = chunks.size() - 1; i-- > 0;) {
-            std::string part = std::to_string(chunks[i]);
+        std::string res = std::to_string(d_.back());
+        for (usize i = d_.size() - 1; i-- > 0;) {
+            std::string part = std::to_string(d_[i]);
             res.append(CHUNK_LEN - part.size(), '0');
             res += part;
         }
-
         return res;
     }
 
@@ -131,8 +118,13 @@ class BigInt {
             u64 sum = carry + this->d_[i];
             if (i < other.d_.size())
                 sum += other.d_[i];
+            if (sum >= CHUNK_BASE) {
+                sum -= CHUNK_BASE;
+                carry = 1;
+            } else {
+                carry = 0;
+            }
             d_[i] = static_cast<u32>(sum);
-            carry = (sum >> N_BITS);
         }
         if (carry > 0)
             this->d_.push_back(static_cast<u32>(carry));
@@ -164,7 +156,7 @@ class BigInt {
                 this->d_[i] = static_cast<u32>(this->d_[i] - diff);
                 borrow = 0;
             } else {
-                this->d_[i] = static_cast<u32>((u64{1} << N_BITS) + this->d_[i] - diff);
+                this->d_[i] = static_cast<u32>(u64{CHUNK_BASE} + this->d_[i] - diff);
                 borrow = 1;
             }
         }
@@ -205,39 +197,6 @@ class BigInt {
     void trim() {
         while (this->d_.size() > 1 && this->d_.back() == 0)
             this->d_.pop_back();
-    }
-
-    void mul_and_add(u32 m, u32 a) {
-        if (this->is_inf_)
-            return;
-
-        u64 carry = a;
-        for (u32 &digit : this->d_) {
-            u64 cur = u64{digit} * m + carry;
-            digit = static_cast<u32>(cur);
-            carry = (cur >> N_BITS);
-        }
-        while (carry) {
-            this->d_.push_back(static_cast<u32>(carry));
-            carry >>= N_BITS;
-        }
-        this->trim();
-    }
-
-    // divides *this in-place, returns the remainder
-    u32 div(u32 div) {
-        if (this->is_inf_)
-            return 0;
-
-        u64 rem = 0;
-        for (usize i = this->d_.size(); i-- > 0;) {
-            u64 cur = (rem << N_BITS) | this->d_[i];
-            this->d_[i] = static_cast<u32>(cur / div);
-            rem = cur % div;
-        }
-        this->trim();
-
-        return static_cast<u32>(rem);
     }
 };
 
