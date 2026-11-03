@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
-BUILD_TYPE="debug"
+if [ -z "$1" ]; then
+    BUILD_TYPE="debug"
+else
+    BUILD_TYPE="$1"
+fi
+
 if [[ "$1" == r* ]]; then
     BUILD_TYPE="release"
 fi
