@@ -57,12 +57,20 @@ single_test() {
 	INPUT_FILE=$(mktemp)
 	echo "$OPERATION" "$NUM1" "$NUM2" > "$INPUT_FILE"
 
-	RESULT=$(./${TEST} "$INPUT_FILE")
-#	EXPECTED=$(python -c "import sys; sys.set_int_max_str_digits(0); c = $NUM1 $OPERATION $NUM2; print(c)")
+	# Execute bigint operation
+	./"${TEST}" "$INPUT_FILE"
+
+	# Read bigint test output
+	TEST_OUTPUT=$(cat "${INPUT_FILE}.out")
+	 read -r TIME RESULT <<< "$TEST_OUTPUT"
+
+	# Execute operation with tool that works
 	EXPECTED=$(python -c "import sys; sys.set_int_max_str_digits(0); f = open(\"${INPUT_FILE}\"); op, a, b = f.read().split(); f.close(); print(int(a) ${OPERATION} int(b))")
 
 	# Remove file with operation and numbers
 	rm "$INPUT_FILE"
+	# Remove bigint test output file
+	rm "${INPUT_FILE}.out"
 
 	STATUS="NIE ZDANE"
 	if [ "$RESULT" = "$EXPECTED" ]; then

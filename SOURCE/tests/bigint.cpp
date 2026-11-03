@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
-#include <print>
+#include <chrono>
 #include "bigint.hpp"
 
 int main(int argc, char **argv) {
@@ -30,6 +30,10 @@ int main(int argc, char **argv) {
     BigInt a(liczba1);
     BigInt b(liczba2);
     BigInt result;
+	std::chrono::steady_clock::time_point begin;
+	std::chrono::steady_clock::time_point end;
+
+	begin = std::chrono::steady_clock().now();
 
     switch (op) {
         case '+':
@@ -43,7 +47,19 @@ int main(int argc, char **argv) {
             return 1;
     }
 
-    std::cout << result;
+	end = std::chrono::steady_clock().now();
+
+	std::string outfile_name = std::string(argv[1]) + ".out";
+	std::ofstream outfile(outfile_name);
+	if (!outfile.is_open()) {
+		std::cerr << "Nie można otworzyć pliku wyjściowego " << outfile_name << "\n";
+		return 4;
+	} else {
+		outfile << std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count() <<
+			" " << result << "\n";
+	}
+
+//    std::cout << result;
 
     return 0;
 }
