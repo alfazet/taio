@@ -8,9 +8,9 @@ import sys
 import os
 import matplotlib.pyplot as plt
 
-sys.set_int_max_str_digits(1000000)
-random.seed(456789135645)
-retries = 15
+sys.set_int_max_str_digits(10000000)
+random.seed(2137)
+retries = 5
 
 def get_program_str(input_file):
     return f"../build/test_bigint/test_bigint {input_file} > /dev/null"
@@ -21,15 +21,14 @@ def program(s):
 def rand(digits):
     return random.randint(10**(digits - 1), 10**digits - 1)
 
-digits_start=10000
-digits_finish=100000
-steps = 10
+digits_start=500000
+digits_finish=5000000
+steps = 20
 digits = range(digits_start, digits_finish, (int)((digits_finish - digits_start) / steps))
 times = []
 result = []
 
 for i in digits:
-    print(f'Iteration {digits.index(i)}')
     iter_time = 0
     for j in range(retries):
         a = rand(i)
@@ -47,17 +46,14 @@ for i in digits:
         output_file = f'{input_file}.out'
         with open(output_file, 'r') as of:
             output_text = of.read()
-        #output_split = output_text.split(' ')
-        #time_measure = output_split[0]
         time_measure = output_text
 
         # Remove temporary input and test program output file
         os.remove(input_file);
         os.remove(output_file)
 
-        # time from program output is in nanoseconds; convert it to ms
+        # Time from program output is in nanoseconds; convert it to ms
         time_ms = float(time_measure) / 1000000.0
-        print(f'\t{time_ms}')
         iter_time += time_ms
 
     times.append(iter_time / retries)
@@ -67,8 +63,4 @@ plt.title('Czas wykonywania dodawania w zależności od długości liczb')
 plt.xlabel('Długość dodawanych liczb [liczba cyfr]')
 plt.ylabel('Czas [ms]')
 plt.show()
-
-#plt.plot(result, times, 'r')
-#plt.title('Czas wykonywania dodawania w zależności od liczby wyniku')
-#plt.show()
 
