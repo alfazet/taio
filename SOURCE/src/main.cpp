@@ -1,10 +1,10 @@
 #include "algorithms.hpp"
 #include "cli_args.hpp"
 #include "input.hpp"
+#include "output.hpp"
 
 #include <fstream>
 #include <iostream>
-#include <optional>
 #include <print>
 #include <vector>
 
@@ -23,24 +23,31 @@ AlgorithmImpl select_algorithm(int id) {
 }
 
 void main_(const ArgList &args) {
-    std::optional<std::ifstream> file{};
-    if (args.was_provided("-i")) {
-        file.emplace(args.input_file);
-        if (!*file)
-            throw std::runtime_error("nie udało się otworzyć pliku");
-    }
-    std::istream &input = (file ? file.value() : std::cin);
+    std::string in_file_path = args.input_file;
+    std::ifstream in_file(in_file_path);
+    if (!in_file)
+        throw std::runtime_error("nie udało się otworzyć pliku wejściowego");
+    std::istream &input = in_file;
+
+    std::string out_file_path = in_file_path.substr(0, in_file_path.size() - 4) + "_output.txt";
+    std::ofstream out_file(out_file_path);
+    if (!out_file)
+        throw std::runtime_error("nie udało się otworzyć pliku wyjściowego");
+    std::ostream &output = out_file;
 
     AlgorithmImpl impl = select_algorithm(args.algorithm);
     auto f = [impl](const std::vector<BigInt> &s, int n_subsets) { return impl(s, n_subsets); };
 
     int n_testcases = input::read_int(input);
     int n_subsets = args.n_subsets;
+    output::write_pair(output, n_testcases, n_subsets);
+
     std::vector<BigInt> s{};
     for (int tc = 1; tc <= n_testcases; tc++) {
         s = input::read_testcase(input);
         Solution solution = f(s, n_subsets);
-        std::println("test {}\n{}\n", tc, solution);
+        output::write_testcase(output, s);
+        output::write_solution(output, solution);
     }
 }
 
