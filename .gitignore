@@ -1,3 +1,4 @@
 .idea/
 .cache/
 build/
+*_output.txt

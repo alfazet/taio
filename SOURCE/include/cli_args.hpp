@@ -7,15 +7,14 @@
 #include <unordered_map>
 #include <unordered_set>
 
-constexpr const char *DEFAULT_INPUT_FILE = "";
+constexpr const char *DEFAULT_INPUT_FILE = "../EXAMPLES/example0.txt";
 constexpr int DEFAULT_ALGORITHM = 0;
 constexpr int DEFAULT_N_SUBSETS = 2;
 
 #define ARG_TABLE(X)                                                                                                   \
     X("--help", help, bool, parse_bool, false, "pokazuje opis dostępnych opcji")                                       \
-    X("-i", input_file, std::string, parse_string, DEFAULT_INPUT_FILE,                                                 \
-      "plik z danymi wejściowymi, program czyta z wejścia standardowego jeżeli nie podano pliku")                      \
-    X("-a", algorithm, int, parse_int_range(0, 3), DEFAULT_ALGORITHM,                                                  \
+    X("-i", input_file, std::string, parse_string, DEFAULT_INPUT_FILE, "plik z danymi wejściowymi")                    \
+    X("-a", algorithm, int, parse_int_range(0, 1), DEFAULT_ALGORITHM,                                                  \
       "numer wybranego algorytmu (0/1 = brute-force/karmarkar-karp)")                                                  \
     X("-k", n_subsets, int, parse_int_range(2, std::numeric_limits<int>::max()), DEFAULT_N_SUBSETS,                    \
       "na ile podzbiorów podzielić dany zbiór")
