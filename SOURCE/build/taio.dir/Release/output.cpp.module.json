@@ -1,0 +1,13 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "taio.dir\\Release\\output.obj",
+            "outputs": [
+                "taio.dir\\Release\\"
+            ],
+            "requires": []
+        }
+    ]
+}

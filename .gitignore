@@ -1,7 +1,5 @@
 .vs/
 out/
-build/
 .idea/
 .cache/
-build/
 *_output.txt

@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "taio.dir\\Debug\\output.obj",
+            "outputs": [
+                "taio.dir\\Debug\\output.cpp.ifc.dt.module.json",
+                "taio.dir\\Debug\\output.cpp.ifc.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}

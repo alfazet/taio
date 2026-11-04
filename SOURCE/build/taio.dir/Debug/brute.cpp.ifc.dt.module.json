@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "taio.dir\\Debug\\brute.obj",
+            "outputs": [
+                "taio.dir\\Debug\\brute.cpp.ifc.dt.module.json",
+                "taio.dir\\Debug\\brute.cpp.ifc.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}
