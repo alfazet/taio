@@ -1,5 +1,7 @@
 #include "algorithms.hpp"
 
+#include <algorithm>
+
 namespace algorithms {
 
 void brute_force_descent(const std::vector<BigInt> &s, usize current_number, usize used, std::vector<BigInt> &sums,

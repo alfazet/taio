@@ -3,6 +3,7 @@
 #include "input.hpp"
 #include "output.hpp"
 
+#include <chrono>
 #include <fstream>
 #include <iostream>
 #include <print>
@@ -36,8 +37,16 @@ void main_(const ArgList &args) {
     std::ostream &output = out_file;
 
     AlgorithmImpl impl = select_algorithm(args.algorithm);
-    auto f = [impl](const std::vector<BigInt> &s, int n_subsets) { return impl(s, n_subsets); };
+    auto f = [impl](const std::vector<BigInt> &s, int n_subsets) {
+        auto before = std::chrono::steady_clock::now();
+        auto res = impl(s, n_subsets);
+        auto after = std::chrono::steady_clock::now();
+        u64 diff = std::chrono::duration_cast<std::chrono::microseconds>(after - before).count();
 
+        return std::pair<Solution, u64>{res, diff};
+    };
+
+    bool print_timer = args.print_timer;
     int n_testcases = input::read_int(input);
     int n_subsets = args.n_subsets;
     output::write_pair(output, n_testcases, n_subsets);
@@ -45,9 +54,12 @@ void main_(const ArgList &args) {
     std::vector<BigInt> s{};
     for (int tc = 1; tc <= n_testcases; tc++) {
         s = input::read_testcase(input);
-        Solution solution = f(s, n_subsets);
+        auto [solution, micros] = f(s, n_subsets);
         output::write_testcase(output, s);
         output::write_solution(output, solution);
+
+        if (print_timer)
+            std::println("{}", micros);
     }
 }
 

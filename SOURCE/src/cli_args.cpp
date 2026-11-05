@@ -4,7 +4,12 @@
 #include <iomanip>
 #include <stdexcept>
 
-bool parse_bool(const char *s, const char *arg_name) { return true; }
+bool parse_bool(const char *s, const char *arg_name) {
+    (void)s;
+    (void)arg_name;
+
+    return true;
+}
 
 int parse_int(const char *s, const char *arg_name) {
     int value;
