@@ -1,6 +1,7 @@
 #include "algorithms.hpp"
 
 #include <numeric>
+#include <algorithm>
 
 namespace algorithms {
 

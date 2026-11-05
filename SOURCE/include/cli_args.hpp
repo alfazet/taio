@@ -17,7 +17,8 @@ constexpr int DEFAULT_N_SUBSETS = 2;
     X("-a", algorithm, int, parse_int_range(0, 1), DEFAULT_ALGORITHM,                                                  \
       "numer wybranego algorytmu (0/1 = brute-force/karmarkar-karp)")                                                  \
     X("-k", n_subsets, int, parse_int_range(2, std::numeric_limits<int>::max()), DEFAULT_N_SUBSETS,                    \
-      "na ile podzbiorów podzielić dany zbiór")
+      "na ile podzbiorów podzielić dany zbiór")                                                                        \
+    X("-t", print_timer, bool, parse_bool, false, "wypisuje czasy wykonania (w mikrosekundach) na standardowe wyjście")
 
 struct ArgList {
     std::string dataset_path;
