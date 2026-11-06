@@ -8,22 +8,14 @@ import sys
 import os
 import matplotlib.pyplot as plt
 
-sys.set_int_max_str_digits(10000000)
+from common import DEFAULT_BIGINT_BIN
+
+sys.set_int_max_str_digits(0)
 random.seed(2137)
 retries = 5
 
-
-def get_program_str(input_file):
-    return f"../build/test_bigint/test_bigint {input_file} > /dev/null"
-
-
-def program(s):
-    os.system(s)
-
-
 def rand(digits):
     return random.randint(10 ** (digits - 1), 10**digits - 1)
-
 
 digits_start = 500000
 digits_finish = 5000000
@@ -46,7 +38,7 @@ for i in digits:
             inp.write(f"+ {a} {b}")
 
         # Execute test program
-        program(get_program_str(input_file))
+        os.system(f"{DEFAULT_BIGINT_BIN} {input_file} > /dev/null")
 
         # Get time measured by program
         output_file = f"{input_file}.out"
