@@ -1,7 +1,8 @@
 #include "algorithms.hpp"
 
-#include <numeric>
 #include <algorithm>
+#include <numeric>
+#include <queue>
 
 namespace algorithms {
 
@@ -23,9 +24,8 @@ Solution karmarkar_karp(const std::vector<BigInt> &s, int n_subsets) {
     if (s.empty())
         return best;
 
-    std::vector<KKTuple> heap;
-    heap.reserve(s.size());
-
+    std::vector<KKTuple> temp;
+    temp.reserve(s.size());
     for (const BigInt &x : s) {
         KKTuple t;
         t.subsets.assign(n_subsets, std::vector<BigInt>());
@@ -33,46 +33,61 @@ Solution karmarkar_karp(const std::vector<BigInt> &s, int n_subsets) {
         t.subsets[0].push_back(x);
         t.sums[0] = x;
         t.update_spread();
-        heap.push_back(std::move(t));
+        temp.push_back(std::move(t));
     }
-    std::make_heap(heap.begin(), heap.end());
+    std::priority_queue<KKTuple> heap(std::less<KKTuple>{}, std::move(temp));
 
+    // moves the vectors out of the pq.top() tuple instead of copying them
+    // and keeps `spread` intact so that the corrent item gets popped
+    auto pop_and_move = [&heap]() {
+        KKTuple &top = const_cast<KKTuple &>(heap.top());
+        KKTuple t;
+        t.subsets = std::move(top.subsets);
+        t.sums = std::move(top.sums);
+        t.spread = top.spread;
+        heap.pop();
+
+        return t;
+    };
+
+    std::vector<int> idx_a(n_subsets), idx_b(n_subsets);
     while (heap.size() > 1) {
-        std::pop_heap(heap.begin(), heap.end());
-        KKTuple a = std::move(heap.back());
-        heap.pop_back();
+        KKTuple a = pop_and_move();
+        std::iota(idx_a.begin(), idx_a.end(), 0);
+        std::sort(idx_a.begin(), idx_a.end(), [&](int x, int y) { return a.sums[x] < a.sums[y]; });
 
-        std::pop_heap(heap.begin(), heap.end());
-        KKTuple b = std::move(heap.back());
-        heap.pop_back();
-
-        std::vector<int> ia(n_subsets), ib(n_subsets);
-        std::iota(ia.begin(), ia.end(), 0);
-        std::iota(ib.begin(), ib.end(), 0);
-
-        std::sort(ia.begin(), ia.end(), [&](int x, int y) { return a.sums[x] < a.sums[y]; });
-        std::sort(ib.begin(), ib.end(), [&](int x, int y) { return b.sums[x] > b.sums[y]; });
+        KKTuple b = pop_and_move();
+        std::iota(idx_b.begin(), idx_b.end(), 0);
+        std::sort(idx_b.begin(), idx_b.end(), [&](int x, int y) { return b.sums[x] > b.sums[y]; });
 
         KKTuple c;
-        c.subsets.assign(n_subsets, std::vector<BigInt>());
+        c.subsets.resize(n_subsets);
         c.sums.assign(n_subsets, BigInt{0});
 
-        for (int j = 0; j < n_subsets; j++) {
-            std::vector<BigInt> &dst = c.subsets[j];
-            std::vector<BigInt> &sa = a.subsets[ia[j]];
-            std::vector<BigInt> &sb = b.subsets[ib[j]];
+        for (int i = 0; i < n_subsets; i++) {
+            std::vector<BigInt> &dest_subset = c.subsets[i];
+            std::vector<BigInt> &subset_a = a.subsets[idx_a[i]];
+            std::vector<BigInt> &subset_b = b.subsets[idx_b[i]];
 
-            dst = std::move(sa);
-            dst.insert(dst.end(), sb.begin(), sb.end());
-            c.sums[j] = a.sums[ia[j]] + b.sums[ib[j]];
+            dest_subset = std::move(subset_a);
+            if (dest_subset.size() < subset_b.size())
+                dest_subset.swap(subset_b);
+            // dest_subset is the larger of the two, so whenever any element
+            // is moved to dest_subset, it's moved from a subset of size S to a subset of size at least 2 * S
+            //
+            // since there are n elements and at most log n moves can happen to a given element
+            // the total number of moves is n log n
+            dest_subset.insert(dest_subset.end(), std::make_move_iterator(subset_b.begin()),
+                               std::make_move_iterator(subset_b.end()));
+            c.sums[i] = a.sums[idx_a[i]] + b.sums[idx_b[i]];
         }
 
         c.update_spread();
-        heap.push_back(std::move(c));
-        std::push_heap(heap.begin(), heap.end());
+        heap.push(std::move(c));
     }
-    best.subsets = std::move(heap.front().subsets);
-    best.abs_sum_diff = heap.front().spread;
+    KKTuple last = pop_and_move();
+    best.subsets = std::move(last.subsets);
+    best.abs_sum_diff = last.spread;
 
     return best;
 }
