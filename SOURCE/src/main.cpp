@@ -4,6 +4,7 @@
 #include "output.hpp"
 
 #include <chrono>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <print>
@@ -24,13 +25,20 @@ AlgorithmImpl select_algorithm(int id) {
 }
 
 void main_(const ArgList &args) {
+    if (std::strcmp(args.input_file.c_str(), UNDEFINED_INPUT_FILE) == 0)
+        throw std::runtime_error("nie określono pliku wejściowego");
+    if (args.algorithm == UNDEFINED_ALGORITHM)
+        throw std::runtime_error("nie określono algorytmu do wykonania");
+    if (args.n_subsets == UNDEFINED_N_SUBSETS)
+        throw std::runtime_error("nie określono liczby podzbiorów w podziale");
+
     std::string in_file_path = args.input_file;
     std::ifstream in_file(in_file_path);
     if (!in_file)
         throw std::runtime_error("nie udało się otworzyć pliku wejściowego");
     std::istream &input = in_file;
 
-    std::string out_file_path = in_file_path.substr(0, in_file_path.size() - 4) + "_output.txt";
+    std::string out_file_path = output::out_file_path(in_file_path);
     std::ofstream out_file(out_file_path);
     if (!out_file)
         throw std::runtime_error("nie udało się otworzyć pliku wyjściowego");
@@ -61,6 +69,7 @@ void main_(const ArgList &args) {
         if (print_timer)
             std::println("{}", micros);
     }
+    std::println("zapisano rozwiązania do pliku wyjściowego {}", out_file_path);
 }
 
 int main(int argc, char **argv) {
