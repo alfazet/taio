@@ -8,6 +8,8 @@
 
 namespace output {
 
+std::string out_file_path(const std::string &in_file_path);
+
 void write_pair(std::ostream &out, int n, int k);
 
 void write_testcase(std::ostream &out, const std::vector<BigInt> &s);

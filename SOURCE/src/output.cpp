@@ -4,6 +4,17 @@
 
 namespace output {
 
+std::string out_file_path(const std::string &in_file_path) {
+    std::string out = in_file_path;
+    if (out.ends_with(".txt"))
+        out.resize(out.size() - 4);
+    else
+        throw std::runtime_error("oczekiwano pliku w formacie txt");
+    out += "_output.txt";
+
+    return out;
+}
+
 void write_pair(std::ostream &out, int n, int k) { out << n << " " << k; }
 
 void write_testcase(std::ostream &out, const std::vector<BigInt> &s) {
