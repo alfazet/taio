@@ -8,7 +8,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(BUILD_BIGINT_TEST "Build bigint test executable" OFF)
-
 if (BUILD_BIGINT_TEST)
     file(GLOB SOURCES CONFIGURE_DEPENDS tests/bigint.cpp)
     set(TARGET_NAME test_bigint)
@@ -16,6 +15,7 @@ else ()
     file(GLOB SOURCES CONFIGURE_DEPENDS src/*.cpp)
     set(TARGET_NAME taio)
 endif ()
+unset(BUILD_BIGINT_TEST CACHE)
 
 add_executable(${TARGET_NAME} ${SOURCES})
 
