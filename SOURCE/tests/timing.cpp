@@ -20,8 +20,8 @@ void generate(const char *path, int n, int l) {
 }
 
 double run_once(const std::string &bin, int algo, int k, int n, int l) {
-    generate(".timing.txt", n, l);
-    std::string cmd = bin + " -i .timig.txt -a " + std::to_string(algo) + " -k " + std::to_string(k) + " -t > .timing_out.txt";
+    generate(".timing_in.txt", n, l);
+    std::string cmd = bin + " -i .timing_in.txt -a " + std::to_string(algo) + " -k " + std::to_string(k) + " -t > .timing_out.txt";
     if (std::system(cmd.c_str()) != 0) {
         std::cerr << "Błąd: polecenie nie powiodło się: " << cmd << "\n";
         std::exit(1);
@@ -55,8 +55,11 @@ int main(int argc, char **argv) {
     out << "algo,param,value,n,l,k,time_us\n";
 
     int algo, from, to, step, n, l, k;
-    char param;
+    char prev_param = 0, param;
     while (in >> algo >> param >> from >> to >> step >> n >> l >> k) {
+		if (prev_param != param)
+			std::cerr << "===> algo: "<< algo << "; param: " << param << std::endl;
+		prev_param = param;
         for (int v = from; v <= to; v += step) {
 			switch (param) {
 				case 'n': n = v; break;
@@ -83,7 +86,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    std::remove("bench_in.txt");
-    std::remove("bench_out.txt");
+    std::remove(".timing_in.txt");
+    std::remove(".timing_out.txt");
     return 0;
 }
