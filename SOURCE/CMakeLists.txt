@@ -14,7 +14,7 @@ target_include_directories(${TARGET_NAME}
     PRIVATE
         include
 )
-file(GLOB SOURCES CONFIGURE_DEPENDS tests/timing.cpp)
+file(GLOB SOURCES CONFIGURE_DEPENDS tests/timing.cpp src/karmarkar_karp.cpp src/brute.cpp)
 set(TARGET_NAME test_timing)
 add_executable(${TARGET_NAME} ${SOURCES})
 target_include_directories(${TARGET_NAME}
