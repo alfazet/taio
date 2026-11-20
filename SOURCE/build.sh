@@ -12,18 +12,6 @@ fi
 BUILD_DIR="build/${BUILD_TYPE}"
 mkdir -p "$BUILD_DIR"
 
-case "$BUILD_TYPE" in
-	test_bigint)
-		cmake -S . -B "$BUILD_DIR" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DBUILD_BIGINT_TEST=ON
-		cmake --build "$BUILD_DIR" -j$(nproc)
-		;;
-	test_timing)
-		cmake -S . -B "$BUILD_DIR" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DBUILD_TIMING_TEST=ON
-		cmake --build "$BUILD_DIR" -j$(nproc)
-		;;
-	*)
-		cmake -S . -B "$BUILD_DIR" -DCMAKE_BUILD_TYPE="$BUILD_TYPE"
-		cmake --build "$BUILD_DIR" -j$(nproc)
-		;;
-esac
+cmake -S . -B "$BUILD_DIR" -DCMAKE_BUILD_TYPE="$BUILD_TYPE"
+cmake --build "$BUILD_DIR" -j$(nproc)
 
