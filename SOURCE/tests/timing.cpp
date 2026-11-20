@@ -1,3 +1,12 @@
+/*
+ * This test requires input file. It's format is as follows:
+ * - First line describes <main program binary path> <retries count> <timeout limit [s]>
+ * - Following lines describe single test:
+ *   <algo> <param> <from> <to> <step> <fixed n> <fixed l> <fixed k>
+ *   where param is 'n', 'l' or 'k' depending on which parameter is to be tested and
+ *   from, to and step describe change of chosen parameter
+ */
+
 #include "bigint.hpp"
 #include <algorithm>
 #include <cstdlib>
@@ -88,5 +97,6 @@ int main(int argc, char **argv) {
 
     std::remove(".timing_in.txt");
     std::remove(".timing_out.txt");
+	std::remove(".timing_in_output.txt");
     return 0;
 }

@@ -1,24 +1,25 @@
 #!/bin/python
 
+import matplotlib.pyplot as plt
 import random
 import sys
 import os
 
 from common import DEFAULT_BIN
 
-random.seed(911)
+random.seed(2137)
 
 def rand_max(max_val):
     return random.randint(1, max_val)
 
-def rand_digits(digits):
-    return random.randint(10 ** (digits - 1), 10**digits - 1)
+def rand_digits(l):
+    return random.randint(10 ** (l - 1), 10**l - 1)
 
-def generate_set(digits, n, k):
+def generate_set(n, k, l):
     rand_set = []
     
     # Get set total sum
-    total = rand_digits(digits)
+    total = rand_digits(l)
     # Adjust total so it's divisible by k
     total += k - total % k
 
@@ -46,17 +47,117 @@ def generate_set(digits, n, k):
 
     # Account for uncommon case when difference value exceeded last element
     if (rand_set[n - 1] < 0):
-        return generate_set(digits, n, k)
+        return generate_set(n, k, l)
 
     return rand_set
 
-numbers = [20, 30, 40, 50, 67, 100, 200, 300, 1000, 2000]
-subsets = [2, 3, 4, 5, 6, 7, 10, 15]
-digits  = [3, 4, 5, 6, 7, 10, 20, 30, 40, 50, 67, 100, 200, 420, 911, 2137]
+ns = list(range(20, 1001, 3)) #[20, 30, 40, 50, 67, 100, 200, 300, 1000, 2000]
+ks = list(range(2, 501, 3)) #[2, 3, 4, 5, 6, 7, 10, 15]
+ls = list(range(4, 101, 1)) #[3, 4, 5, 6, 7, 10, 20, 30, 40, 50, 67, 100, 200, 420, 911, 2137]
 
 retries = 5
 ratio_count = 0
 total_ratio = 0
+
+fixed_n = 1000
+fixed_l = 100
+fixed_k = 50
+
+ratio_n = []
+ratio_l = []
+ratio_k = []
+
+def test_karmarkar_karp(n, k, l):
+    if 10**(l-1) < n:
+        raise Exception('Suma zbioru jest mniejsza niż liczba elementów')
+    # Write test sets into input file
+    input_file = '.karmarkar_karp_error_input.txt'
+    with open(input_file, "w") as inp:
+        inp.write(f'{retries}\n')
+        for r in range(retries):
+            generated_set = generate_set(n, k, l)
+            for num in generated_set:
+                inp.write(f'{num} ')
+            inp.write('\n')
+
+    # Run program with Karmarkar algorithm
+    os.system(f'{DEFAULT_BIN} -i {input_file} -a 1 -k {k}')
+
+    # Read output
+    ratio = 0
+    output_file = f'{input_file.removesuffix('.txt')}_output.txt'
+    with open(output_file, "r") as outp:
+        # Skip first line
+        outp.readline()
+        for r in range(retries):
+            # Skip empty line
+            outp.readline()
+            # Get total of divided set
+            line = outp.readline()
+            total = (int)(line.split(' ', 1)[0])
+            # Get subsets totals
+            set_sums = []
+            for i in range(k):
+                line = outp.readline()
+                set_sums.append((int)(line.split(' ', 1)[0]))
+            # Get max difference between sets
+            line = outp.readline()
+            maxdiff = (int)(line.split(' ', 1)[0])
+
+            # Compute maximum ratio between subset sum and target subset sum
+            target = total // k
+            maxsum = max(set_sums)
+            maxratio = maxsum / target
+
+            maxratio = maxdiff / total
+            # Add ratio to cummulated one
+            ratio += maxratio
+
+    # Average subsets ratios
+    ratio /= retries
+
+    os.remove(input_file)
+    os.remove(output_file)
+    
+    return ratio
+
+def test_karmarkar_karp_multiple(ns, ks, ls, ratio_list):
+    for n in ns:
+        for k in ks:
+            for l in ls:
+                ratio = test_karmarkar_karp(n, k, l)
+                ratio_list.append(ratio)
+
+def plot_karmarkar_karp(param):
+    plt.figure()
+    match param:
+        case "n":
+            plt.plot(ns, ratio_n, "o-b")
+            plt.title(f"Stosunek maksymalnej różnicy podzbiorów względem sumy zbioru\nwejściowego w zależności od n (l = {fixed_l}, k = {fixed_k})")
+            plt.xlabel("Liczba liczb n")
+        case "k":
+            plt.plot(ks, ratio_k, "o-b")
+            plt.title(f"Stosunek maksymalnej różnicy podzbiorów względem sumy zbioru\nwejściowego w zależności od k (n = {fixed_n}, l = {fixed_l})")
+            plt.xlabel("Liczba podzbiorów k")
+        case "l":
+            plt.plot(ls, ratio_l, "o-b")
+            plt.title(f"Stosunek maksymalnej różnicy podzbiorów względem sumy zbioru\nwejściowego w zależności od l (n = {fixed_n}, k = {fixed_k})")
+            plt.xlabel("Długość liczb l [liczba cyfr]")
+    plt.ylabel("Względna różnica wyniku")
+
+    #plt.legend()
+    plt.grid(True, which="both")
+
+   
+test_karmarkar_karp_multiple(ns, [fixed_k], [fixed_l], ratio_n)
+test_karmarkar_karp_multiple([fixed_n], ks, [fixed_l], ratio_k)
+test_karmarkar_karp_multiple([fixed_l], [fixed_k], ls, ratio_l)
+plot_karmarkar_karp("n")
+plot_karmarkar_karp("k")
+plot_karmarkar_karp("l")
+plt.show()
+
+exit(0)
 
 for n in numbers:
     print(f'Testy dla n={n}')
