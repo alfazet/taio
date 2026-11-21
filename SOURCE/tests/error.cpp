@@ -39,6 +39,18 @@ std::vector<BigInt> generate(int n, int l) {
     return set;
 }
 
+BigInt max_subset_sum(const Solution &s) {
+    BigInt best = BigInt("0");
+    for (const auto &subset : s.subsets) {
+        BigInt sum = BigInt("0");
+        for (const auto &v : subset)
+            sum = sum + v;
+        if (best < sum)
+            best = sum;
+    }
+    return best;
+}
+
 double measure(int retries, int n, int l, int k) {
 
     double ratio = 0;
@@ -47,7 +59,7 @@ double measure(int retries, int n, int l, int k) {
         auto set = generate(n, l);
         auto solution_approx = algorithms::karmarkar_karp(set, k);
         auto solution_exact = algorithms::brute_force(set, k);
-        ratio += solution_approx.abs_sum_diff.double_div(solution_exact.abs_sum_diff);
+        ratio += max_subset_sum(solution_approx).double_div(max_subset_sum(solution_exact));
     }
 
     return ratio / static_cast<double>(retries);
