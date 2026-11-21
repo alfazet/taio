@@ -7,16 +7,16 @@
 #include <unordered_map>
 #include <unordered_set>
 
-constexpr const char *DEFAULT_INPUT_FILE = "../EXAMPLES/example0.txt";
-constexpr int DEFAULT_ALGORITHM = 0;
-constexpr int DEFAULT_N_SUBSETS = 2;
+constexpr const char *UNDEFINED_INPUT_FILE = "";
+constexpr int UNDEFINED_ALGORITHM = -1;
+constexpr int UNDEFINED_N_SUBSETS = -1;
 
 #define ARG_TABLE(X)                                                                                                   \
     X("--help", help, bool, parse_bool, false, "pokazuje opis dostępnych opcji")                                       \
-    X("-i", input_file, std::string, parse_string, DEFAULT_INPUT_FILE, "plik z danymi wejściowymi")                    \
-    X("-a", algorithm, int, parse_int_range(0, 1), DEFAULT_ALGORITHM,                                                  \
-      "numer wybranego algorytmu (0/1 = brute-force/karmarkar-karp)")                                                  \
-    X("-k", n_subsets, int, parse_int_range(2, std::numeric_limits<int>::max()), DEFAULT_N_SUBSETS,                    \
+    X("-i", input_file, std::string, parse_string, UNDEFINED_INPUT_FILE, "plik z danymi wejściowymi")                  \
+    X("-a", algorithm, int, parse_int_range(0, 1), UNDEFINED_ALGORITHM,                                                \
+      "numer wybranego algorytmu (0 - brute-force, 1 - aproksymacyjny LDM)")                                           \
+    X("-k", n_subsets, int, parse_int_range(2, std::numeric_limits<int>::max()), UNDEFINED_N_SUBSETS,                  \
       "na ile podzbiorów podzielić dany zbiór")                                                                        \
     X("-t", print_timer, bool, parse_bool, false, "wypisuje czasy wykonania (w mikrosekundach) na standardowe wyjście")
 
