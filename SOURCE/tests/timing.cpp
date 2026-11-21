@@ -3,8 +3,8 @@
  * - First line describes <seed> <retries count> <timeout limit [s]>
  * - Following lines describe single test:
  *   <algo> <param> <from> <to> <step> <fixed n> <fixed l> <fixed k>
- *   where param is 'n', 'l' or 'k' depending on which parameter is to be tested and
- *   from, to and step describe change of chosen parameter
+ *   where <param> is 'n', 'l' or 'k' depending on which parameter is to be tested and
+ *   <from>, <to> and <step> describe change of chosen parameter
  */
 
 #include "bigint.hpp"

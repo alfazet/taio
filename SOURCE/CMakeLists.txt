@@ -21,6 +21,13 @@ target_include_directories(${TARGET_NAME}
     PRIVATE
         include
 )
+file(GLOB SOURCES CONFIGURE_DEPENDS tests/error.cpp src/karmarkar_karp.cpp)
+set(TARGET_NAME test_error)
+add_executable(${TARGET_NAME} ${SOURCES})
+target_include_directories(${TARGET_NAME}
+    PRIVATE
+        include
+)
 file(GLOB SOURCES CONFIGURE_DEPENDS src/*.cpp)
 set(TARGET_NAME taio)
 add_executable(${TARGET_NAME} ${SOURCES})
