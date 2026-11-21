@@ -3,22 +3,16 @@ import sys
 
 import matplotlib.pyplot as plt
 
-PARAM_LABELS = {
-    "n": "Liczba liczb n",
-    "l": "Dlugosc liczb l [liczba cyfr]",
-    "k": "Liczba podzbiorow k",
-}
-
 def load_results():
     with open(RESULTS_FILE, newline="") as f:
         return list(csv.DictReader(f))
 
 def plot_series(rows, param):
-    points = [r for r in rows if r["param"] == param]
+    points = rows
     if not points:
         return
 
-    x = [int(r[param]) for r in points]
+    x = [int(r["k"]) for r in points]
     y = [float(r["error"]) for r in points]
     fixed = ", ".join(f"{p}={points[0][p]}" for p in "nlk" if p != param)
 
@@ -28,7 +22,7 @@ def plot_series(rows, param):
         "Stosunek maksymalnej roznicy podzbiorow wzgledem sumy zbioru\n"
         f"wejsciowego w zaleznosci od {param} ({fixed})"
     )
-    plt.xlabel(PARAM_LABELS[param])
+    plt.xlabel("Liczba podziałów zbioru")
     plt.ylabel("Wzgledna roznica wyniku")
     plt.grid(True)
 
