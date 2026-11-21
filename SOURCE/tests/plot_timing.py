@@ -1,8 +1,7 @@
 import csv
+import sys
 
 import matplotlib.pyplot as plt
-
-RESULTS_FILE = "timing_out.csv"
 
 ALGO_NAMES = {"0": "brute-force", "1": "karmarkar-karp"}
 ALGO_COLORS = {"0": "r", "1": "g"}
@@ -35,6 +34,10 @@ def plot_series(rows, algo, param):
     if algo == "0" and param == "n":
         plt.yscale("log")
 
+if len(sys.argv) < 2:
+    print(f"Uzycie: python {sys.argv[0]} <plik_csv>")
+    sys.exit(1)
+RESULTS_FILE = sys.argv[1]
 
 rows = load_results()
 algos = sorted({r["algo"] for r in rows})
