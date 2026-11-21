@@ -55,21 +55,21 @@ double measure(int retries, int n, int l, int k) {
 
 int main(int argc, char **argv) {
     if (argc < 3) {
-        std::cerr << "Użycie: " << argv[0] << " <wejście.txt> <wyniki.csv>\n";
+        std::cerr << "Uzycie: " << argv[0] << " <wejscie.txt> <wyniki.csv>\n";
         return 1;
     }
 
     std::ifstream in(argv[1]);
     std::ofstream out(argv[2]);
     if (!in || !out) {
-        std::cerr << "Nie udało się otworzyć plików\n";
+        std::cerr << "Nie udalo sie otworzyc plikow\n";
         return 2;
     }
 
     int seed;
     int retries;
     if (!(in >> seed >> retries)) {
-        std::cerr << "Niepoprawny nagłówek pliku wejściowego\n";
+        std::cerr << "Niepoprawny naglowek pliku wejsciowego\n";
         return 3;
     }
     rng.seed(seed);

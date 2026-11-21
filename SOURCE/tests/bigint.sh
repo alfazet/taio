@@ -80,7 +80,7 @@ single_test() {
     if [ "$FULLINFO" = "TRUE" ]; then
         echo "Status: [$STATUS] | $NUM1 $OPERATION $NUM2 = $RESULT | Oczekiwany wynik: $EXPECTED"
     else
-        echo "Status: [$STATUS] | Długości dodawanych liczb: $DIGITS"
+        echo "Status: [$STATUS] | Dlugosci dodawanych liczb: $DIGITS"
     fi
 }
 

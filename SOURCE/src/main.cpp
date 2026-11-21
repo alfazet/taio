@@ -21,27 +21,27 @@ AlgorithmImpl select_algorithm(int id) {
         return &algorithms::karmarkar_karp;
     }
 
-    throw std::runtime_error("wybrano nieprawidłowy algorytm (musi być 0 lub 1)");
+    throw std::runtime_error("wybrano nieprawidlowy algorytm (musi byc 0 lub 1)");
 }
 
 void main_(const ArgList &args) {
     if (std::strcmp(args.input_file.c_str(), UNDEFINED_INPUT_FILE) == 0)
-        throw std::runtime_error("nie określono pliku wejściowego");
+        throw std::runtime_error("nie okreslono pliku wejsciowego");
     if (args.algorithm == UNDEFINED_ALGORITHM)
-        throw std::runtime_error("nie określono algorytmu do wykonania");
+        throw std::runtime_error("nie okreslono algorytmu do wykonania");
     if (args.n_subsets == UNDEFINED_N_SUBSETS)
-        throw std::runtime_error("nie określono liczby podzbiorów w podziale");
+        throw std::runtime_error("nie okreslono liczby podzbiorow w podziale");
 
     std::string in_file_path = args.input_file;
     std::ifstream in_file(in_file_path);
     if (!in_file)
-        throw std::runtime_error("nie udało się otworzyć pliku wejściowego");
+        throw std::runtime_error("nie udalo sie otworzyc pliku wejsciowego");
     std::istream &input = in_file;
 
     std::string out_file_path = output::out_file_path(in_file_path);
     std::ofstream out_file(out_file_path);
     if (!out_file)
-        throw std::runtime_error("nie udało się otworzyć pliku wyjściowego");
+        throw std::runtime_error("nie udalo sie otworzyc pliku wyjsciowego");
     std::ostream &output = out_file;
 
     AlgorithmImpl impl = select_algorithm(args.algorithm);
@@ -69,7 +69,7 @@ void main_(const ArgList &args) {
         if (print_timer)
             std::println("{}", micros);
     }
-    std::println("zapisano rozwiązania do pliku wyjściowego {}", out_file_path);
+    std::println("zapisano rozwiazania do pliku wyjsciowego {}", out_file_path);
 }
 
 int main(int argc, char **argv) {
@@ -82,11 +82,11 @@ int main(int argc, char **argv) {
         }
         main_(args);
     } catch (const ArgParserError &e) {
-        std::println(stderr, "błąd parsera opcji: {}", e.what());
+        std::println(stderr, "blad parsera opcji: {}", e.what());
         arg_parser.print_help();
         return 1;
     } catch (const std::runtime_error &e) {
-        std::println(stderr, "błąd wykonania: {}", e.what());
+        std::println(stderr, "blad wykonania: {}", e.what());
         return 1;
     }
 

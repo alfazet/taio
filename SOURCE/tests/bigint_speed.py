@@ -57,7 +57,7 @@ for i in digits:
     times.append(iter_time / retries)
 
 plt.plot(digits, times, "g")
-plt.title("Czas wykonywania dodawania w zależności od długości liczb")
-plt.xlabel("Długość dodawanych liczb [liczba cyfr]")
+plt.title("Czas wykonywania dodawania w zaleznosci od dlugosci liczb")
+plt.xlabel("Dlugosc dodawanych liczb [liczba cyfr]")
 plt.ylabel("Czas [ms]")
 plt.show()

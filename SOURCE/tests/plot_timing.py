@@ -8,8 +8,8 @@ ALGO_NAMES = {"0": "brute-force", "1": "karmarkar-karp"}
 ALGO_COLORS = {"0": "r", "1": "g"}
 PARAM_LABELS = {
     "n": "Liczba liczb n",
-    "l": "Długość liczb l [cyfry]",
-    "k": "Liczba podzbiorów k",
+    "l": "Dlugosc liczb l [cyfry]",
+    "k": "Liczba podzbiorow k",
 }
 
 def load_results():
@@ -28,7 +28,7 @@ def plot_series(rows, algo, param):
 
     plt.figure()
     plt.plot(x, y, f"o-{ALGO_COLORS[algo]}")
-    plt.title(f"{ALGO_NAMES[algo]}: czas działania w zależności od {param} ({fixed})")
+    plt.title(f"{ALGO_NAMES[algo]}: czas dzialania w zaleznosci od {param} ({fixed})")
     plt.xlabel(PARAM_LABELS[param])
     plt.ylabel("Czas [µs]")
     plt.grid(True)

@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 
 PARAM_LABELS = {
     "n": "Liczba liczb n",
-    "l": "Długość liczb l [liczba cyfr]",
-    "k": "Liczba podzbiorów k",
+    "l": "Dlugosc liczb l [liczba cyfr]",
+    "k": "Liczba podzbiorow k",
 }
 
 def load_results():
@@ -25,15 +25,15 @@ def plot_series(rows, param):
     plt.figure()
     plt.plot(x, y, "o-b")
     plt.title(
-        "Stosunek maksymalnej różnicy podzbiorów względem sumy zbioru\n"
-        f"wejściowego w zależności od {param} ({fixed})"
+        "Stosunek maksymalnej roznicy podzbiorow wzgledem sumy zbioru\n"
+        f"wejsciowego w zaleznosci od {param} ({fixed})"
     )
     plt.xlabel(PARAM_LABELS[param])
-    plt.ylabel("Względna różnica wyniku")
+    plt.ylabel("Wzgledna roznica wyniku")
     plt.grid(True)
 
 if len(sys.argv) < 2:
-    print(f"Użycie: python {sys.argv[0]} <plik_csv>")
+    print(f"Uzycie: python {sys.argv[0]} <plik_csv>")
     sys.exit(1)
 RESULTS_FILE = sys.argv[1]
 

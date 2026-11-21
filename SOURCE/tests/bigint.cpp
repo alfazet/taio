@@ -7,9 +7,9 @@
 int main(int argc, char **argv) {
 
     if (argc < 2) {
-        std::cerr << "Użycie: " << argv[0]
-                  << "<plik> <z>\nPlik powinien zawierać dane w formacie: <+|-> "
-                     "<liczba1> <liczba2>\nObecność <z> określa czy program ma zapisać"
+        std::cerr << "Uzycie: " << argv[0]
+                  << "<plik> <z>\nPlik powinien zawierac dane w formacie: <+|-> "
+                     "<liczba1> <liczba2>\nObecnosc <z> okresla czy program ma zapisac"
                      " wynik operacji\n";
         return 1;
     }
@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
     std::ifstream file(argv[1]);
 
     if (!file.is_open()) {
-        std::cerr << "Nie można otworzyć pliku " << argv[1] << "\n";
+        std::cerr << "Nie mozna otworzyc pliku " << argv[1] << "\n";
         return 2;
     }
 
@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
     std::string liczba1, liczba2;
 
     if (!(file >> op >> liczba1 >> liczba2)) {
-        std::cerr << "Błąd odczytu danych z pliku\n";
+        std::cerr << "Blad odczytu danych z pliku\n";
         return 3;
     }
 
@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
         result = a - b;
         break;
     default:
-        std::cerr << "Nieprawidłowa operacja: '" << op << "'\n";
+        std::cerr << "Nieprawidlowa operacja: '" << op << "'\n";
         return 1;
     }
 
@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
     std::string outfile_name = std::string(argv[1]) + ".out";
     std::ofstream outfile(outfile_name);
     if (!outfile.is_open()) {
-        std::cerr << "Nie można otworzyć pliku wyjściowego " << outfile_name << "\n";
+        std::cerr << "Nie mozna otworzyc pliku wyjsciowego " << outfile_name << "\n";
         return 4;
     } else {
         outfile << std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count();
