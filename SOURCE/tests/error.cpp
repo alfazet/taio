@@ -2,9 +2,9 @@
  * This test requires input file. It's format is as follows:
  * - First line describes <seed> <retries count>
  * - Following lines describe single test:
- *   <param> <from> <to> <step> <fixed n> <fixed l> <fixed k>
- *   where <param> is 'n', 'l' or 'k' depending on which parameter is to be tested and
- *   <from>, <to> and <step> describe change of chosen parameter
+ *   <from> <to> <step> <fixed n> <fixed l>
+ *   where <from>, <to> and <step> describe change of chosen parameter and
+ *   <fixed n> and <fixed l> are values of 'n' and 'l' parameters respectively
  */
 
 #include "algorithms.hpp"
@@ -22,10 +22,9 @@
 
 std::mt19937 rng;
 
-std::tuple<BigInt, std::vector<BigInt>> generate(int n, int l) {
+std::vector<BigInt> generate(int n, int l) {
     std::string s;
     std::vector<BigInt> set;
-	BigInt sum = BigInt(0);
 
     for (int i = 0; i < n; i++) {
         s.clear();
@@ -35,10 +34,9 @@ std::tuple<BigInt, std::vector<BigInt>> generate(int n, int l) {
         }
 		auto value = BigInt(s);
         set.push_back(value);
-		sum += value;
     }
 
-    return {sum, set};
+    return set;
 }
 
 double measure(int retries, int n, int l, int k) {
@@ -46,12 +44,10 @@ double measure(int retries, int n, int l, int k) {
 	double ratio = 0;
 
 	for (int i = 0; i < retries; ++i) {
-		auto generated = generate(n, l);
-		auto total = std::get<0>(generated);
-		auto set = std::get<1>(generated);
-		auto solution = algorithms::karmarkar_karp(set, k);
-		auto maxdiff = solution.abs_sum_diff;
-		ratio += maxdiff.double_div(total);
+		auto set = generate(n, l);
+		auto solution_approx = algorithms::karmarkar_karp(set, k);
+		auto solution_exact = algorithms::brute(set, k);
+		ratio += solution_approx.abs_sum_diff.double_div(solution_exact.abs_sum_diff);
 	}
 
 	return ratio / static_cast<double>(retries);
@@ -78,23 +74,15 @@ int main(int argc, char **argv) {
     }
     rng.seed(seed);
 
-	out << "param,n,l,k,error\n";
+	out << "k,n,l,error\n";
 	
-	int from, to, step, n, l, k;
-	char param, prev_param = 0;
-	while (in >> param >> from >> to >> step >> n >> l >> k) {
-        for (int v = from; v <= to; v += step) {
-			switch (param) {
-                case 'n': n = v; break;
-                case 'k': k = v; break;
-                case 'l': l = v; break;
-            }
-
+	int from, to, step, n, l;
+	while (in >> from >> to >> step >> n >> l) {
+        for (int k = from; k <= to; k += step) {
             auto error = measure(retries, n, l, k);
 
-            out << param << ',' << n << ',' << l << ',' << k << ','
-                << error << std::endl;
-            std::cerr << "n=" << n << " l=" << l << " k=" << k << ": " << error << "\n";
+            out << k << ',' << n << ',' << l << ',' << error << std::endl;
+            std::cerr << "k=" << k << " n=" << n << " l=" << l << ": " << error << "\n";
         }
     }
 }
