@@ -78,7 +78,7 @@ int main(int argc, char **argv) {
     }
     rng.seed(seed);
 
-	out << "param,value,n,l,k,error\n";
+	out << "param,n,l,k,error\n";
 	
 	int from, to, step, n, l, k;
 	char param, prev_param = 0;
