@@ -20,9 +20,11 @@ def plot_series(rows, param):
     if not points:
         return
 
+    n = [int(r["n"]) for r in points][0]
+    l = [int(r["l"]) for r in points][0]
+
     x = [int(r["k"]) for r in points]
     y = [float(r["error"]) for r in points]
-    fixed = ", ".join(f"{p}={points[0][p]}" for p in "nlk" if p != param)
 
     lower = [lower_bound(k) for k in x]
     upper = [upper_bound(k) for k in x]
@@ -33,7 +35,7 @@ def plot_series(rows, param):
     plt.plot(x, upper, "--g", label=r"Gorne ograniczenie: $\frac{4}{3}-\frac{1}{3k}$")
     plt.title(
         "Stosunek maksymalnej roznicy podzbiorow wzgledem sumy zbioru\n"
-        f"wejsciowego w zaleznosci od {param} ({fixed})"
+        f"wejsciowego w zaleznosci od k (n={n}, l={l})"
     )
     plt.xlabel("Liczba podziałów zbioru")
     plt.ylabel("Wzgledna różnica wyniku")
