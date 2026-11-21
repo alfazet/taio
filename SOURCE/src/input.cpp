@@ -7,7 +7,7 @@ namespace input {
 int read_int(std::istream &input) {
     std::string line{};
     if (!std::getline(input, line))
-        throw std::runtime_error("błąd wejścia");
+        throw std::runtime_error("blad wejscia");
 
     int n{};
     std::istringstream iss(line);
@@ -20,14 +20,14 @@ std::vector<BigInt> read_testcase(std::istream &input) {
     std::vector<BigInt> testcase{};
     std::string line{};
     if (!std::getline(input, line))
-        throw std::runtime_error("błąd wejścia");
+        throw std::runtime_error("blad wejscia");
 
     BigInt x{};
     std::istringstream iss(line);
     while (iss >> x)
         testcase.push_back(x);
     if (testcase.empty())
-        throw std::runtime_error("nieprawidłowy test");
+        throw std::runtime_error("nieprawidlowy test");
 
     return testcase;
 }
