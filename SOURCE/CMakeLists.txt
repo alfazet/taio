@@ -7,15 +7,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-file(GLOB SOURCES CONFIGURE_DEPENDS tests/bigint.cpp)
-set(TARGET_NAME test_bigint)
+file(GLOB SOURCES CONFIGURE_DEPENDS tests/bigint_correctness.cpp)
+set(TARGET_NAME test_bigint_correctness)
 add_executable(${TARGET_NAME} ${SOURCES})
 target_include_directories(${TARGET_NAME}
     PRIVATE
         include
 )
-file(GLOB SOURCES CONFIGURE_DEPENDS tests/bigint_correctness.cpp)
-set(TARGET_NAME test_bigint_correctness)
+file(GLOB SOURCES CONFIGURE_DEPENDS tests/bigint_speed.cpp)
+set(TARGET_NAME test_bigint_timing)
 add_executable(${TARGET_NAME} ${SOURCES})
 target_include_directories(${TARGET_NAME}
     PRIVATE
@@ -28,7 +28,7 @@ target_include_directories(${TARGET_NAME}
     PRIVATE
         include
 )
-file(GLOB SOURCES CONFIGURE_DEPENDS tests/error.cpp src/karmarkar_karp.cpp)
+file(GLOB SOURCES CONFIGURE_DEPENDS tests/error.cpp src/karmarkar_karp.cpp src/brute.cpp)
 set(TARGET_NAME test_error)
 add_executable(${TARGET_NAME} ${SOURCES})
 target_include_directories(${TARGET_NAME}
