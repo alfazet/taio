@@ -32,7 +32,7 @@ std::vector<BigInt> generate(int n, int l) {
         for (int j = 1; j < l; j++) {
             s += char('0' + rng() % 10);
         }
-		auto value = BigInt(s);
+        auto value = BigInt(s);
         set.push_back(value);
     }
 
@@ -40,17 +40,17 @@ std::vector<BigInt> generate(int n, int l) {
 }
 
 double measure(int retries, int n, int l, int k) {
-	
-	double ratio = 0;
 
-	for (int i = 0; i < retries; ++i) {
-		auto set = generate(n, l);
-		auto solution_approx = algorithms::karmarkar_karp(set, k);
-		auto solution_exact = algorithms::brute(set, k);
-		ratio += solution_approx.abs_sum_diff.double_div(solution_exact.abs_sum_diff);
-	}
+    double ratio = 0;
 
-	return ratio / static_cast<double>(retries);
+    for (int i = 0; i < retries; ++i) {
+        auto set = generate(n, l);
+        auto solution_approx = algorithms::karmarkar_karp(set, k);
+        auto solution_exact = algorithms::brute_force(set, k);
+        ratio += solution_approx.abs_sum_diff.double_div(solution_exact.abs_sum_diff);
+    }
+
+    return ratio / static_cast<double>(retries);
 }
 
 int main(int argc, char **argv) {
@@ -74,10 +74,10 @@ int main(int argc, char **argv) {
     }
     rng.seed(seed);
 
-	out << "k,n,l,error\n";
-	
-	int from, to, step, n, l;
-	while (in >> from >> to >> step >> n >> l) {
+    out << "k,n,l,error\n";
+
+    int from, to, step, n, l;
+    while (in >> from >> to >> step >> n >> l) {
         for (int k = from; k <= to; k += step) {
             auto error = measure(retries, n, l, k);
 
@@ -86,4 +86,3 @@ int main(int argc, char **argv) {
         }
     }
 }
-
