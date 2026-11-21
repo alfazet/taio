@@ -41,9 +41,9 @@ std::tuple<BigInt, std::vector<BigInt>> generate(int n, int l) {
     return {sum, set};
 }
 
-BigInt measure(int retries, int n, int l, int k) {
+double measure(int retries, int n, int l, int k) {
 	
-	BigInt sum = BigInt(0);
+	double ratio = 0;
 
 	for (int i = 0; i < retries; ++i) {
 		auto generated = generate(n, l);
@@ -51,10 +51,10 @@ BigInt measure(int retries, int n, int l, int k) {
 		auto set = std::get<1>(generated);
 		auto solution = algorithms::karmarkar_karp(set, k);
 		auto maxdiff = solution.abs_sum_diff;
-		sum += maxdiff;
+		ratio += maxdiff.double_div(total);
 	}
 
-	return sum / retries;
+	return ratio / static_cast<double>(retries);
 }
 
 int main(int argc, char **argv) {
