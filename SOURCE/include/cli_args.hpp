@@ -12,13 +12,13 @@ constexpr int UNDEFINED_ALGORITHM = -1;
 constexpr int UNDEFINED_N_SUBSETS = -1;
 
 #define ARG_TABLE(X)                                                                                                   \
-    X("--help", help, bool, parse_bool, false, "pokazuje opis dostępnych opcji")                                       \
-    X("-i", input_file, std::string, parse_string, UNDEFINED_INPUT_FILE, "plik z danymi wejściowymi")                  \
+    X("--help", help, bool, parse_bool, false, "pokazuje opis dostepnych opcji")                                       \
+    X("-i", input_file, std::string, parse_string, UNDEFINED_INPUT_FILE, "plik z danymi wejsciowymi")                  \
     X("-a", algorithm, int, parse_int_range(0, 1), UNDEFINED_ALGORITHM,                                                \
       "numer wybranego algorytmu (0 - brute-force, 1 - aproksymacyjny LDM)")                                           \
     X("-k", n_subsets, int, parse_int_range(2, std::numeric_limits<int>::max()), UNDEFINED_N_SUBSETS,                  \
-      "na ile podzbiorów podzielić dany zbiór")                                                                        \
-    X("-t", print_timer, bool, parse_bool, false, "wypisuje czasy wykonania (w mikrosekundach) na standardowe wyjście")
+      "na ile podzbiorow podzielic dany zbior")                                                                        \
+    X("-t", print_timer, bool, parse_bool, false, "wypisuje czasy wykonania (w mikrosekundach) na standardowe wyjscie")
 
 struct ArgList {
     std::string dataset_path;
@@ -68,12 +68,12 @@ class UnknownFlagError : public ArgParserError {
 
 class MissingValueError : public ArgParserError {
   public:
-    explicit MissingValueError(std::string flag) : ArgParserError("brak wartości dla " + flag) {}
+    explicit MissingValueError(std::string flag) : ArgParserError("brak wartosci dla " + flag) {}
 };
 
 class InvalidValueError : public ArgParserError {
   public:
-    InvalidValueError(std::string flag) : ArgParserError("nieprawidłowa wartość dla " + flag) {}
+    InvalidValueError(std::string flag) : ArgParserError("nieprawidlowa wartosc dla " + flag) {}
 };
 
 #endif // TAIO_CLI_ARGS_HPP

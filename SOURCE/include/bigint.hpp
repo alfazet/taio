@@ -33,11 +33,11 @@ class BigInt {
 
     BigInt(const std::string &s) : BigInt() {
         if (s.empty())
-            throw std::runtime_error("liczba nie może być pusta");
+            throw std::runtime_error("liczba nie moze byc pusta");
 
         for (char c : s)
             if (c < '0' || c > '9')
-                throw std::runtime_error("liczba może zawierać wyłącznie cyfry dziesiętne");
+                throw std::runtime_error("liczba moze zawierac wylacznie cyfry dziesietne");
 
         d_.clear();
         usize end = s.size();
@@ -168,7 +168,7 @@ class BigInt {
             return *this;
         }
         if (*this < other)
-            throw std::runtime_error("nie można odjąć większej liczby od mniejszej");
+            throw std::runtime_error("nie mozna odjac wiekszej liczby od mniejszej");
 
         u64 borrow = 0;
         for (usize i = 0; i < this->d_.size(); i++) {

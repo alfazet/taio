@@ -21,7 +21,7 @@ struct Solution {
 
 template <> struct std::formatter<Solution> : std::formatter<std::string> {
     auto format(const Solution &s, std::format_context &ctx) const {
-        std::string repr = std::format("największy moduł z różnic sum po wszystkich parach podzbiorów:\n{}\npodzbiory:",
+        std::string repr = std::format("najwiekszy modul z roznic sum po wszystkich parach podzbiorow:\n{}\npodzbiory:",
                                        s.abs_sum_diff);
         for (const auto &subset : s.subsets)
             repr += std::format("\n{}", subset);
