@@ -3,6 +3,7 @@ import csv
 import sys
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 OP_NAMES = {"+": "dodawanie", "-": "odejmowanie"}
 OP_COLORS = {"+": "g", "-": "r"}
@@ -19,14 +20,23 @@ def plot_series(rows, op):
         return
 
     x = [int(r["digits"]) for r in points]
-    y = [float(r["time_us"]) for r in points]
+    y = [float(r["time_us"])/1000 for r in points]
+
+    s = int(len(x)*0.1)
+    h = int(len(x)/2)
+    x_fit = np.array([x[s], x[h]])
+    y_fit = np.array([y[s], y[h]])
+    linear = np.polyfit(x_fit, y_fit, 1)
+    y_lin = np.polyval(linear, x)
 
     plt.figure()
-    plt.plot(x, y, f"o-{OP_COLORS[op]}")
-    plt.title(f"Czas wykonywania: {OP_NAMES[op]} w zaleznosci od dlugosci liczb")
-    plt.xlabel("Dlugosc liczb [liczba cyfr]")
-    plt.ylabel("Czas [µs]")
+    plt.plot(x, y, f"o-{OP_COLORS[op]}", label=f"{OP_NAMES[op]}")
+    plt.plot(x, y_lin, "b--", label=f"O(l)")
+    plt.title(f"Czas wykonywania: {OP_NAMES[op]} w zależności od długosci liczb")
+    plt.xlabel("Długość liczb [liczba cyfr]")
+    plt.ylabel("Czas [ms]")
     plt.grid(True)
+    plt.legend()
 
 
 if len(sys.argv) < 2:
