@@ -2,17 +2,13 @@ import csv
 import sys
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 def load_results():
     with open(RESULTS_FILE, newline="") as f:
         return list(csv.DictReader(f))
 
-def lower_bound(k):
-    # 4/3 - 1/(3(k-1)), undefined for k = 1
-    return float("nan") if k <= 1 else 4 / 3 - 1 / (3 * (k - 1))
-
-def upper_bound(k):
-    # 4/3 - 1/(3k)
+def bound(k):
     return 4 / 3 - 1 / (3 * k)
 
 def plot_series(rows, param):
@@ -26,16 +22,15 @@ def plot_series(rows, param):
     x = [int(r["k"]) for r in points]
     y = [float(r["error"]) for r in points]
 
-    lower = [lower_bound(k) for k in x]
-    upper = [upper_bound(k) for k in x]
+    x_bound = np.linspace(x[0], x[len(x)-1], num=50)
+    y_bound = [bound(k) for k in x_bound]
 
     plt.figure()
     plt.plot(x, y, "o-b")
-    plt.plot(x, lower, "--r", label=r"Dolne ograniczenie: $\frac{4}{3}-\frac{1}{3(k-1)}$")
-    plt.plot(x, upper, "--g", label=r"Gorne ograniczenie: $\frac{4}{3}-\frac{1}{3k}$")
+    plt.plot(x_bound, y_bound, "--g", label=r"Ograniczenie: $\frac{4}{3}-\frac{1}{3k}$")
     plt.title(
-        "Stosunek maksymalnej roznicy podzbiorow wzgledem sumy zbioru\n"
-        f"wejsciowego w zaleznosci od k (n={n}, l={l})"
+        "Stosunek maksymalnej różnicy podzbiorów względem sumy zbioru\n"
+        f"wejściowego w zależnosci od k (n={n}, l={l})"
     )
     plt.xlabel("Liczba podziałów zbioru")
     plt.ylabel("Wzgledna różnica wyniku")

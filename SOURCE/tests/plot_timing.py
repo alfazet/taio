@@ -46,22 +46,24 @@ def plot_series(rows, algo, param):
     def exponential(x, a, b):
         return a * np.exp(b * x)
 
+    x_fun = np.linspace(x[0], x[len(x)-1], 100)
+
     linear = np.polyfit(x_fit, y_fit, 1)
-    y_lin = np.polyval(linear, x)
+    y_lin = np.polyval(linear, x_fun)
     quadratic = np.polyfit(x_fit, y_fit, 2)
-    y_quad = np.polyval(quadratic, x)
+    y_quad = np.polyval(quadratic, x_fun)
     nlogn = np.column_stack((x_fit * np.log(x_fit), np.ones(len(x_fit))))
     coeff_nlogn = np.linalg.lstsq(nlogn, y_fit, rcond=None)[0]
-    y_nlogn = coeff_nlogn[0] * np.array(x) * np.log(np.array(x)) + coeff_nlogn[1]
+    y_nlogn = coeff_nlogn[0] * np.array(x_fun) * np.log(np.array(x_fun)) + coeff_nlogn[1]
     poly13 = np.polyfit(x_fit, y_fit, 13)
-    y_p13 = np.polyval(poly13, x)
+    y_p13 = np.polyval(poly13, x_fun)
     popt, _ = curve_fit(exponential, x_fit, y_fit, p0=(0, 0.1), maxfev=10000)
-    y_exp = exponential(np.array(x), *popt)
-    print(poly13)
+    y_exp = exponential(np.array(x_fun), *popt)
 
     if algo == "1":
         x = x[int(len(x)/2):]
         y = y[int(len(y)/2):]
+        x_fun = x_fun[int(len(x_fun)/2):]
         y_lin = y_lin[int(len(y_lin)/2):]
         y_nlogn = y_nlogn[int(len(y_nlogn)/2):]
         y_quad = y_quad[int(len(y_quad)/2):]
@@ -70,14 +72,14 @@ def plot_series(rows, algo, param):
     plt.figure()
     plt.plot(x, y, f"o-{ALGO_COLORS[algo]}", label=ALGO_NAMES[algo])
     if algo == "0" and param == "n":
-        plt.plot(x, y_exp,   "y--", label=f"O(e^{param})")
+        plt.plot(x_fun, y_exp,   "y--", label=f"O(eⁿ)")
     if algo == "0" and param == "k":
-        plt.plot(x, y_p13,   "m--", label=f"O({param}¹³)")
+        plt.plot(x_fun, y_p13,   "m--", label=f"O({param}¹³)")
     if algo == "1" or (algo == "0" and param == "l"):
-        plt.plot(x, y_lin,   "b--", label=f"O({param})")
+        plt.plot(x_fun, y_lin,   "b--", label=f"O({param})")
     if algo == "1":
-        plt.plot(x, y_nlogn, "c--", label=f"O({param} log({param}))")
-        plt.plot(x, y_quad,  "m--", label=f"O({param}²)")
+        plt.plot(x_fun, y_nlogn, "c--", label=f"O({param} log({param}))")
+        plt.plot(x_fun, y_quad,  "m--", label=f"O({param}²)")
     plt.title(f"{ALGO_NAMES[algo]}: czas działania w zależnosci od {param} ({fixed})")
     plt.gca().xaxis.set_major_locator(ticker.MaxNLocator(integer=True))
     plt.xlabel(PARAM_LABELS[param])
