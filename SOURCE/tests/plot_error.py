@@ -26,15 +26,16 @@ def plot_series(rows, param):
     y_bound = [bound(k) for k in x_bound]
 
     plt.figure()
-    plt.plot(x, y, "o-b")
+    plt.plot(x, y, "o-b", label="Obliczony stosunek")
     plt.plot(x_bound, y_bound, "--g", label=r"Ograniczenie: $\frac{4}{3}-\frac{1}{3k}$")
     plt.title(
         "Stosunek maksymalnej różnicy podzbiorów względem sumy zbioru\n"
         f"wejściowego w zależnosci od k (n={n}, l={l})"
     )
     plt.xlabel("Liczba podziałów zbioru")
-    plt.ylabel("Wzgledna różnica wyniku")
+    plt.ylabel("Stosunek podzbiorów o największych sumach")
     plt.grid(True)
+    plt.legend()
 
 if len(sys.argv) < 2:
     print(f"Uzycie: python {sys.argv[0]} <plik_csv>")
