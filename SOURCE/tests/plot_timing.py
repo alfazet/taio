@@ -29,20 +29,24 @@ def plot_series(rows, algo, param):
     s = int(len(x)*0.1)
     h = int(len(x)/2)
     x_fit = np.array([x[s], x[h]])
-    linear = np.polyfit(x_fit, [y[s], y[h]], 1)
+    y_fit = np.array([y[s], y[h]])
+    
+    linear = np.polyfit(x_fit, y_fit, 1)
     y_lin = np.polyval(linear, x)
-    quadratic = np.polyfit(x_fit, [y[s], y[h]], 2)
+    quadratic = np.polyfit(x_fit, y_fit, 2)
     y_quad = np.polyval(quadratic, x)
-    #nlogn = np.column_stack((x_fit * np.log(x_fit), np.ones(len(x))))
-    #coeff_nlogn = np.linalg.lstsq(nlogn, y, rcond=None)[0]
-    #y_nlogn = coeff_nlogn[0] * np.array(x) * np.log(np.array(x)) + coeff_nlogn[1]
+    nlogn = np.column_stack((x_fit * np.log(x_fit), np.ones(len(x_fit))))
+    coeff_nlogn = np.linalg.lstsq(nlogn, y_fit, rcond=None)[0]
+    y_nlogn = coeff_nlogn[0] * np.array(x) * np.log(np.array(x)) + coeff_nlogn[1]
 
     plt.figure()
     plt.plot(x, y, f"o-{ALGO_COLORS[algo]}", label=ALGO_NAMES[algo])
     if algo == "1":
-        plt.plot(x, y_lin,   "b--", label="O(n)")
-        #plt.plot(x, y_nlogn, "c--", label="O(nlogn)")
-        plt.plot(x, y_quad,  "m--", label="O(n^2)")
+        plt.plot(x, y_lin,   "b--",
+            label=f"{linear[0]:.3f}{param} {"-" if linear[1] < 0 else "+"} {abs(linear[1]):.2f}")
+        plt.plot(x, y_nlogn, "c--", label=f"{coeff_nlogn[0]:.6f}{param} log({param}) {"-" if coeff_nlogn[1] < 0 else "+"} {abs(coeff_nlogn[1]):.2f}")
+        plt.plot(x, y_quad,  "m--", 
+            label=f"{quadratic[0]:.6f}{param}² {"-" if quadratic[1] < 0 else "+"} {abs(quadratic[1]):.2f}{param} {"-" if quadratic[2] < 0 else "+"} {abs(quadratic[2]):.2f}")
     plt.title(f"{ALGO_NAMES[algo]}: czas działania w zależnosci od {param} ({fixed})")
     plt.xlabel(PARAM_LABELS[param])
     plt.ylabel("Czas [ms]")
