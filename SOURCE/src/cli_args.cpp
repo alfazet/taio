@@ -64,7 +64,7 @@ ARG_TABLE(X)
 #undef X
 
 void ArgParser::print_help() const {
-    this->out << "użycie: " << this->prog_name << " [opcje]\ngdzie:\n";
+    this->out << "uzycie: " << this->prog_name << " [opcje]\ngdzie:\n";
 #define X(flag, field, type, parser, default_val, help)                                                                \
     this->out << "  " << std::left << std::setw(8) << flag << std::setw(120) << help << "\n";
     ARG_TABLE(X)

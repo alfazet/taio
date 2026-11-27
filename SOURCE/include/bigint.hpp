@@ -1,6 +1,7 @@
 #ifndef TAIO_BIGINT_HPP
 #define TAIO_BIGINT_HPP
 
+#include <cmath>
 #include <compare>
 #include <format>
 #include <iostream>
@@ -32,11 +33,11 @@ class BigInt {
 
     BigInt(const std::string &s) : BigInt() {
         if (s.empty())
-            throw std::runtime_error("liczba nie może być pusta");
+            throw std::runtime_error("liczba nie moze byc pusta");
 
         for (char c : s)
             if (c < '0' || c > '9')
-                throw std::runtime_error("liczba może zawierać wyłącznie cyfry dziesiętne");
+                throw std::runtime_error("liczba moze zawierac wylacznie cyfry dziesietne");
 
         d_.clear();
         usize end = s.size();
@@ -82,6 +83,30 @@ class BigInt {
     }
 
     friend BigInt abs_diff(const BigInt &x, const BigInt &y) { return x.abs_diff(y); }
+
+	double double_div(const BigInt &other) const {
+		if (other.is_zero())
+			throw std::runtime_error("dzielenie przez zero");
+		if (this->is_inf_)
+			return INFINITY;
+		if (other.is_inf_)
+			return 0.0;
+
+		auto top = [](const std::vector<u32> &d, int &skipped) {
+			int n = d.size() < 3 ? d.size() : 3;
+			double m = 0;
+			for (int i = static_cast<int>(d.size()) - 1; i >= static_cast<int>(d.size()) - n; i--) {
+				m = m * CHUNK_BASE + d[i];
+			}
+			skipped = d.size() - n;
+			return m;
+		};
+
+		int skip_a, skip_b;
+		double a = top(this->d_, skip_a);
+		double b = top(other.d_, skip_b);
+		return a / b * std::pow(static_cast<double>(CHUNK_BASE), static_cast<double>(skip_a - skip_b));
+	}
 
     friend std::istream &operator>>(std::istream &in, BigInt &x) {
         std::string s;
@@ -143,7 +168,7 @@ class BigInt {
             return *this;
         }
         if (*this < other)
-            throw std::runtime_error("nie można odjąć większej liczby od mniejszej");
+            throw std::runtime_error("nie mozna odjac wiekszej liczby od mniejszej");
 
         u64 borrow = 0;
         for (usize i = 0; i < this->d_.size(); i++) {

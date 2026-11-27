@@ -7,18 +7,37 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-option(BUILD_BIGINT_TEST "Build bigint test executable" OFF)
-if (BUILD_BIGINT_TEST)
-    file(GLOB SOURCES CONFIGURE_DEPENDS tests/bigint.cpp)
-    set(TARGET_NAME test_bigint)
-else ()
-    file(GLOB SOURCES CONFIGURE_DEPENDS src/*.cpp)
-    set(TARGET_NAME taio)
-endif ()
-unset(BUILD_BIGINT_TEST CACHE)
-
+file(GLOB SOURCES CONFIGURE_DEPENDS tests/bigint_correctness.cpp)
+set(TARGET_NAME test_bigint_correctness)
 add_executable(${TARGET_NAME} ${SOURCES})
-
+target_include_directories(${TARGET_NAME}
+    PRIVATE
+        include
+)
+file(GLOB SOURCES CONFIGURE_DEPENDS tests/bigint_speed.cpp)
+set(TARGET_NAME test_bigint_timing)
+add_executable(${TARGET_NAME} ${SOURCES})
+target_include_directories(${TARGET_NAME}
+    PRIVATE
+        include
+)
+file(GLOB SOURCES CONFIGURE_DEPENDS tests/timing.cpp src/karmarkar_karp.cpp src/brute.cpp)
+set(TARGET_NAME test_timing)
+add_executable(${TARGET_NAME} ${SOURCES})
+target_include_directories(${TARGET_NAME}
+    PRIVATE
+        include
+)
+file(GLOB SOURCES CONFIGURE_DEPENDS tests/error.cpp src/karmarkar_karp.cpp src/brute.cpp)
+set(TARGET_NAME test_error)
+add_executable(${TARGET_NAME} ${SOURCES})
+target_include_directories(${TARGET_NAME}
+    PRIVATE
+        include
+)
+file(GLOB SOURCES CONFIGURE_DEPENDS src/*.cpp)
+set(TARGET_NAME taio)
+add_executable(${TARGET_NAME} ${SOURCES})
 target_include_directories(${TARGET_NAME}
     PRIVATE
         include
