@@ -31,9 +31,9 @@ def plot_series(rows, op):
 
     plt.figure()
     plt.plot(x, y, f"o-{OP_COLORS[op]}", label=f"{OP_NAMES[op]}")
-    plt.plot(x, y_lin, "b--", label=f"O(l)")
+    plt.plot(x, y_lin, "b--", label=f"O(L)")
     plt.title(f"Czas wykonywania: {OP_NAMES[op]} w zależności od długosci liczb")
-    plt.xlabel("Długość liczb [liczba cyfr]")
+    plt.xlabel("Długość liczb L [liczba cyfr]")
     plt.ylabel("Czas [ms]")
     plt.grid(True)
     plt.legend()

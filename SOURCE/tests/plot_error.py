@@ -30,7 +30,7 @@ def plot_series(rows, param):
     plt.plot(x_bound, y_bound, "--g", label=r"Ograniczenie: $\frac{4}{3}-\frac{1}{3k}$")
     plt.title(
         "Stosunek maksymalnej różnicy podzbiorów względem sumy zbioru\n"
-        f"wejściowego w zależnosci od k (n={n}, l={l})"
+        f"wejściowego w zależnosci od k (n={n}, L={l})"
     )
     plt.xlabel("Liczba podziałów zbioru")
     plt.ylabel("Stosunek podzbiorów o największych sumach")

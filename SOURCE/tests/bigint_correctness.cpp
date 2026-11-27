@@ -43,7 +43,7 @@ static bool single_test(char op, int digits) {
     std::string expected_str = std::to_string(expected);
 
     bool passed = (actual == expected_str);
-    std::cout << "Status: [" << (passed ? "ZDANE" : "NIE ZDANE") << "] | " << num1 << " " << op << " " << num2 << " = "
+    std::cout << "Status: [" << (passed ? "OK" : "ZLE") << "] | " << num1 << " " << op << " " << num2 << " = "
               << actual << " | Oczekiwany wynik: " << expected_str << "\n";
 
     return passed;

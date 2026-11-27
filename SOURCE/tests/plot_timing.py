@@ -11,7 +11,7 @@ ALGO_NAMES = {"0": "brute-force", "1": "karmarkar-karp"}
 ALGO_COLORS = {"0": "r", "1": "g"}
 PARAM_LABELS = {
     "n": "Liczba liczb n",
-    "l": "Długosc liczb l [cyfry]",
+    "L": "Długosc liczb L [cyfry]",
     "k": "Liczba podzbiorów k",
 }
 
@@ -25,9 +25,12 @@ def plot_series(rows, algo, param):
     if not points:
         return
 
+    if param == "l":
+        param = "L"
+
     x = [int(r["value"]) for r in points]
     y = [float(r["time_us"])/1000 for r in points]
-    fixed = ", ".join(f"{p}={points[0][p]}" for p in "nlk" if p != param)
+    fixed = ", ".join(f"{p}={points[0][p.lower()]}" for p in "nLk" if p != param)
     
     # brute points
     if algo == "0":
